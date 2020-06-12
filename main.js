@@ -14,10 +14,7 @@ app.get('/', async (req, res) => {
          case 'html':
             return res.send(result)
          case 'pdf': {
-            const browser = await puppeteer.launch({
-               headless: false,
-               args: ['--no-sandbox']
-            })
+            const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})
             const page = await browser.newPage()
             await page.setContent(result)
             const buffer = await page.pdf({
