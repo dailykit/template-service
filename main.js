@@ -14,10 +14,10 @@ app.get('/', async (req, res) => {
          case 'html':
             return res.send(result)
          case 'pdf': {
-            const browser = await puppeteer.launch(
+            const browser = await puppeteer.launch({
                executablePath: process.env.CHROMIUM_PATH,
                args: ['--no-sandbox'],
-            )
+            })
             const page = await browser.newPage()
             await page.setContent(result)
             const buffer = await page.pdf({
