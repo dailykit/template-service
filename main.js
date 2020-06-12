@@ -1,6 +1,7 @@
 import fs from 'fs'
 import express from 'express'
 import pdf from 'html-pdf'
+import phantom from 'phantomjs'
 const app = express()
 
 app.get('/', async (req, res) => {
@@ -15,7 +16,11 @@ app.get('/', async (req, res) => {
             return res.send(result)
          case 'pdf': {
             return pdf
-               .create(result, { width: '5in', height: '6in' })
+               .create(result, {
+                  phantomPath: phantomjs.path,
+                  width: '5in',
+                  height: '6in'
+               })
                .toBuffer((err, buffer) => {
                   if (err) throw Error(err.message)
                   res.type('application/pdf')
