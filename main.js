@@ -14,7 +14,7 @@ app.get('/', async (req, res) => {
          case 'html':
             return res.send(result)
          case 'pdf': {
-            const browser = await puppeteer.launch()
+            const browser = await puppeteer.launch({ignoreDefaultArgs: ['--disable-extensions']})
             const page = await browser.newPage()
             await page.setContent(result)
             const buffer = await page.pdf({
