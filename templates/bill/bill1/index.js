@@ -60,7 +60,7 @@ const bill = async data => {
       const { address, contact, title } = await client.request(ORGANIZATION)
       const { address: orgAddress } = address[0].value
       const { phoneNo: orgPhoneNo } = contact[0].value
-      const { title: orgName } = title[0].value
+      const { name: orgName } = title[0].value
 
       const {
          customerPhone,

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import express from 'express'
-import puppeteer from 'puppeteer'
+import pdf from 'html-pdf'
 const app = express()
 
 app.get('/', async (req, res) => {
@@ -14,20 +14,13 @@ app.get('/', async (req, res) => {
          case 'html':
             return res.send(result)
          case 'pdf': {
-            const browser = await puppeteer.launch({
-               executablePath: process.env.CHROMIUM_PATH,
-               args: ['--no-sandbox'],
-            })
-            const page = await browser.newPage()
-            await page.setContent(result)
-            const buffer = await page.pdf({
-               width: '10cm',
-               path: `${parsed.type}.pdf`
-            })
-            await browser.close()
-            fs.unlinkSync(`${parsed.type}.pdf`)
-            res.type('application/pdf')
-            return res.send(buffer)
+            return pdf
+               .create(result, { width: '5in', height: '6in' })
+               .toBuffer((err, buffer) => {
+                  if (err) throw Error(err.message)
+                  res.type('application/pdf')
+                  return res.send(buffer)
+               })
          }
          default:
             throw Error('Invalid Format')
