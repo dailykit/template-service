@@ -15,17 +15,19 @@ app.get('/', async (req, res) => {
          case 'html':
             return res.send(result)
          case 'pdf': {
-            return pdf
-               .create(result, {
-                  phantomPath: phantomjs.path,
-                  width: '5in',
-                  height: '6in'
-               })
-               .toBuffer((err, buffer) => {
-                  if (err) throw Error(err.message)
-                  res.type('application/pdf')
-                  return res.send(buffer)
-               })
+            const browser = await puppeteer.launch({
+               args: ['--no-sandbox', '--disable-setuid-sandbox']
+            })
+            const page = await browser.newPage()
+            await page.setContent(result)
+            const buffer = await page.pdf({
+               width: '10cm',
+               path: `${parsed.type}.pdf`
+            })
+            await browser.close()
+            fs.unlinkSync(`${parsed.type}.pdf`)
+            res.type('application/pdf')
+            return res.send(buffer)
          }
          default:
             throw Error('Invalid Format')
