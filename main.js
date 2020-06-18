@@ -1,7 +1,6 @@
 import fs from 'fs'
 import express from 'express'
-import pdf from 'html-pdf'
-import phantom from 'phantomjs'
+import puppeteer from 'puppeteer'
 const app = express()
 
 app.get('/', async (req, res) => {
