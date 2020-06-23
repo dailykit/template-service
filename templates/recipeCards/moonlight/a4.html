@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+   <style>
+      html,
+      body {
+         height: auto;
+         margin: 0px;
+         /* border: 1px solid black; */
+      }
+
+      @page {
+         size: 29.7cm 21cm;
+         margin-bottom: 0;
+      }
+
+      .page {
+         /* page-break-after: auto; */
+         page-break-after: avoid;
+         page-break-before: avoid;
+
+      }
+   </style>
+</head>
+
+<body style="width: max-content;margin: 0px;height: 42cm;">
+
+   <div class="page"
+      style="width: 29.7cm;
+         height: 21cm;background: #FFFFFF;font-family: Arial;font-style: normal;color: #44496B;background-image: url('http://localhost:4000/images/page1.png');background-size: 100%;margin:0;">
+      <div style="margin-left: 0.99cm;margin-right: 0.99cm;color: #44496B;">
+         <nav class="nav" style="width:inherit;height: 2.11cm;margin-bottom: auto;">
+            <div style="float: left;
+         font-weight: bold; font-size: 20px;display: flex; margin-top: 0.47cm;">
+               <img src="http://localhost:4000/images/Ellipse 1.png" alt="logo"
+                  style="width: 1.6cm;height: 1.6cm;border-radius: 50%;margin: auto;margin-right: 0.4233cm;">
+               <div style="margin: auto;">Restaurant name</div>
+            </div>
+            <div style="float: right;margin-top: 0.8823cm;">
+               <div style="display: flex;">
+                  <img src="http://localhost:4000/images/globe.png" width="12px" height="12px"
+                     style="margin-right: 0.18cm;">
+                  <a href="www.restaurantonlinestore.com"
+                     style=" font-size: 12px;text-decoration: none; color: #44496B;transform: translateY(-2px);">www.restaurantonlinestore.com</a>
+               </div>
+               <div style="margin-top: 0.1cm; font-size: 12px;"><img src="http://localhost:4000/images/phone.png"
+                     style="margin-right: 0.2cm;" width="12px" height="12px">+1 658 3467348343
+               </div>
+            </div>
+         </nav>
+         <div style="display: flex; padding-top: 0.7411cm; width: 100%; margin-bottom: 0.829cm">
+            {{#if image}}
+            <div style="margin-right: 1.12cm; ">
+               <img src="{{image}}" alt="" width="13.75cm" height="10.323cm">
+            </div>
+            <div>
+               <div class="header"
+                  style="font-weight: bolder;font-size: 40px;font-family: Arial;width: 12.733cm;height: 7.87cm;margin-bottom: 0.4235cm;">
+                  {{name}}
+               </div>
+               {{#if author}}
+               <div class="author"
+                  style="font-family: Arial;font-style: normal;font-weight: bold;width: fit-content;font-size: 20px;">
+                  By: {{author}}
+               </div>
+               {{/if}}
+               <div
+                  style="padding-top: 0.847cm;font-family: Pacifico;font-style: normal;font-weight: normal;font-size: 20px;">
+                  {{#if type}}
+                  {{type}}
+                  {{/if}}
+                  {{#if cuisine}}
+                  <span style="font-size: 32px; font-weight: lighter;font-family: Arial;padding:0px 20px ;">|</span>
+
+                  {{cuisine}}
+                  {{/if}}
+               </div>
+            </div>
+            {{else}}
+            <div style="text-align: center;">
+               <div
+                  style="font-weight: bolder;font-size: 40px;font-family: Arial;width:26.52cm;height: 3.35cm;margin-bottom: 1.69cm;">
+                  {{name}}
+               </div>
+               {{#if author}}
+               <div style="font-family: Arial;font-style: normal;font-weight: bold;font-size: 20px;">
+                  By: {{author}}
+               </div>
+               {{/if}}
+               <div
+                  style="padding-top: 0.847cm;font-family: Pacifico;font-style: normal;font-weight: normal;font-size: 20px;">
+                  {{#if type}}
+                  {{type}}
+                  {{/if}}
+                  {{#if cuisine}}
+                  <span style="font-size: 32px; font-weight: lighter;font-family: Arial;padding:0px 20px ;">|</span>
+
+                  {{cuisine}}
+                  {{/if}}
+               </div>
+            </div>
+            {{/if}}
+
+         </div>
+         {{#if description}}
+         <div class="content"
+            style="border-top: 2px solid #44496B;padding: 0.5647cm 0cm;font-style: normal;font-weight: bold;font-size: 16px;text-align: center;font-family: Arial;width: 27.72cm;min-height: 1.235cm;">
+            {{description}}
+         </div>
+         {{/if}}
+
+         <div class="list"
+            style="padding: 0.9176cm 0px;font-size: 12px;display: flex;align-items: center;width: fit-content;margin: auto;">
+            {{#if servings}}
+
+            <div class="left" style="width: max-content;text-align: center;">
+               <div class="list-title" style="font-size: 16px;text-align: center;font-weight: bold;">
+                  Servings</div>
+               <div class="quantity"
+                  style="font-size: 24px;font-weight:bolder;padding: 0.282cm 0cm;padding-bottom: 0cm;text-align: center;">
+                  {{servings}}</div>
+            </div>
+            <span
+               style="font-size: 32px; font-weight: lighter;font-family: Arial;padding: 0px 2.01cm;margin-bottom: auto;">|</span>
+            {{/if}}
+            {{#if cookingTime}}
+
+            <div class="mid" style="width: max-content;text-align: center;">
+               <div class="list-title" style="font-size: 16px;text-align: center;font-weight: bold;">
+                  Cooking Time</div>
+               <div class="quantity"
+                  style="font-size: 24px;font-weight:bolder;padding: 0.282cm 0cm;padding-bottom: 0cm;text-align: center;">
+                  {{cookingTime}}</div>
+            </div>
+            <span
+               style="font-size: 32px; font-weight: lighter;font-family: Arial;padding: 0px 2.01cm;margin-bottom: auto;">|</span>
+            {{/if}}
+            {{#if utensils}}
+
+            <div class="right" style="width: max-content;text-align: center;">
+               <div style="font-size: 16px;text-align: center;font-weight:bold;">Utensils required
+               </div>
+               <div class="quantity"
+                  style="font-size: 24px;font-weight:bolder;padding: 0.282cm 0cm;padding-bottom: 0cm;text-align: center;">
+                  {{utensils}}</div>
+            </div>
+            {{/if}}
+
+         </div>
+
+      </div>
+   </div>
+   <div class="page" style="width: 29.7cm;
+      height: 21cm;margin:0;
+      background: #FFFFFF;
+      font-family: Arial;background-image: url('http://localhost:4000/images/page2.png');
+      background-size: 100%;
+      font-style: normal;">
+      <div style=" padding-top: 0.564cm;
+   margin-right: 0.987cm;height: 20.436cm;
+   display: flex;color: #44496B;">
+         <!-- 1.{{json simpleRecipeYields}}
+         <br /> -->
+         {{#if simpleRecipeYields}}
+         <!-- 2. {{json simpleRecipeYields}}
+         <br /> -->
+         {{#each simpleRecipeYields}}
+         <!-- 3. {{json ingredientSachets_aggregate}}
+         <br /> -->
+         {{#with ingredientSachets_aggregate}}
+         <!-- 4. {{json nodes}} -->
+         <div style="min-width: 8.04cm;">
+            <div style=" font-size: 20px;
+         font-family: Pacifico;
+         text-align: center;
+         width: 6.102cm;
+         margin-left: 1.199cm;
+         margin-bottom: 0.3529cm;">Ingredients</div>
+            {{#ifCond nodes.length '>' 9}}
+            <div style="display: flex;
+         font-size: 10px;height:fit-content;">
+               {{else}}
+               <div style="display: flex;
+            font-size: 10px;height: fit-content; margin-left: 1.6cm;">
+                  {{/ifCond}}
+                  <ul style=" margin: 0cm;
+                           padding: 0cm;
+                           list-style-type: none;
+                           display: flex;
+                           flex-direction: column;
+                           flex-wrap: wrap;
+                           height:18.494cm">
+                     {{#each nodes}}
+                     <li style=" width: 2.75cm;
+                           text-align: center;
+                           height: max-content;
+                           padding-left: 0.9876cm;
+                           margin-bottom: 0.5647cm;
+                           font-family: Arial;
+                           font-style: normal;
+                           font-weight: bold;">
+                        <img src="http://localhost:4000/images/Rectangle 1.jpg" style="display: block;
+                              border-radius: 50%;
+                              width: 0.9876cm;
+                              margin: auto;
+                              height: 0.9876cm;
+                              margin-bottom: 0.15cm;">
+                        {{math @index "+" 1}}. {{this.slipName}}
+                     </li>
+                     {{/each}}
+                  </ul>
+               </div>
+            </div>
+            {{/with}}
+            {{/each}}
+            <div
+               style="width: 1px;height: 20cm;border-left: 1px dashed #44496B;transform: translateY(-0.5cm);margin-right: 0.9876cm;">
+            </div>
+            {{/if}}
+            <div>
+               <div>
+                  {{#if procedures}}
+                  <ul style="margin: 0cm;
+                           padding: 0cm;
+                            list-style-type: none;
+                            flex-direction: column;
+                           flex-wrap: wrap;
+                           width: fit-content;
+                           display: flex;
+                           height: 18.494cm;">
+                     {{#each procedures}}
+                     <div style="width: 5.82cm;margin-left: 0cm;margin-bottom: 0.3529cm;font-size: 20px;
+               font-family: Pacifico;">{{title}}</div>
+                     {{#each steps}}
+                     <div style="margin-right:1.1287cm;width: 5.82cm;position: relative;">
+                        <img src="http://localhost:4000/images/Rectangle 1.jpg" style="width: 5.82cm;
+                                 height: 4.367cm;">
+                        <li>
+                           <p style="text-align: left;
+                        font-family: Arial;
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 8px;
+                        width: 5.82cm;
+                        margin: 0cm;
+                        padding-bottom: 0.3cm;
+                        position: relative;">
+                              <span style="font-family: Pacifico;
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 7px; ">{{math @index "+" 1}}. {{this.title}} :</span>
+                              {{this.description}}
+                           </p>
+                        </li>
+                     </div>
+                     {{/each}}
+                     <img style="width: 5.82cm;
+                        height: 0.8117cm;
+                        margin-bottom: 0.1411cm" src="http://localhost:4000/images/8iGbRLX5T 1.png" alt="design">
+                     {{/each}}
+                  </ul>
+                  {{/if}}
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+</body>
+
+</html>

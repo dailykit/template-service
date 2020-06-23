@@ -52,11 +52,9 @@ const ORGANIZATION = `
 const bill = async data => {
    try {
       const parsed = await JSON.parse(data)
-
       const { order } = await client.request(ORDER, {
          id: parsed.id.toString()
       })
-
       const { address, contact, title } = await client.request(ORGANIZATION)
       const { address: orgAddress } = address[0].value
       const { phoneNo: orgPhoneNo } = contact[0].value
@@ -66,9 +64,7 @@ const bill = async data => {
          customerPhone,
          customerAddress
       } = order.deliveryInfo.dropoff.dropoffInfo
-
       const compiler = await pug.compileFile(__dirname + '/index.pug')
-
       const response = await compiler({
          id: parsed.id,
          restaurant: orgName,

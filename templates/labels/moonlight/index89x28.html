@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <title>{{ name }}</title>
+   <style>
+      body {
+         position: relative;
+         background: lightgray;
+         margin: auto;
+      }
+
+      .container {
+         display: block;
+         width: 336px;
+         height: 136px;
+         display: block;
+         margin: auto;
+         margin-top: 20px;
+         background: #ffffff;
+      }
+
+      .header {
+         display: flex;
+         border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+         height: 33px;
+      }
+
+      .item1 {
+         width: 271px;
+         margin-left: 16px;
+         font-family: Roboto;
+         font-style: normal;
+         font-weight: bold;
+         font-size: 10px;
+         margin-right: 13px;
+         margin-top: 5px;
+         height: 24px;
+      }
+
+      .item2 {
+         background-color: #111111;
+         width: 36px;
+      }
+
+      .item3 {
+         width: 204px;
+         margin-bottom: 18px;
+      }
+
+      .line {
+         margin-top: 2px;
+         border-top: 1px solid #111111;
+      }
+
+      .wrapper {
+         display: flex;
+      }
+
+      .content {
+         padding-left: 16px;
+      }
+
+      .item6 {
+         margin-left: 14px;
+         height: 102px;
+         width: 102px;
+      }
+
+
+      .field {
+         display: flex;
+         flex-flow: column-reverse;
+         height: 24px;
+         border-bottom: 1px solid #111111;
+         border-left: 1px solid #111111;
+      }
+
+      .wrap {
+         display: flex;
+      }
+
+      .item4 {
+         width: 80px;
+         margin-right: 36px;
+      }
+
+      .item5 {
+         width: 88px;
+      }
+
+      .left {
+         margin-top: 19px;
+      }
+
+      label,
+      input {
+         transition: all 0.2s;
+         touch-action: manipulation;
+      }
+
+      input {
+         border: 0;
+         font-family: inherit;
+         -webkit-appearance: none;
+         border-radius: 0;
+         padding: 0;
+         cursor: text;
+         margin-left: 4px;
+         font-family: Roboto;
+         font-style: normal;
+         font-weight: 500;
+         font-size: 10px;
+         margin-bottom: 1px;
+      }
+
+      input:focus {
+         outline: 0;
+         border-bottom: 1px solid #111111;
+         border-left: 1px solid #111111;
+      }
+
+      label {
+         letter-spacing: 0.02em;
+      }
+
+      input:placeholder-shown+label {
+         cursor: text;
+         max-width: 66.66%;
+         white-space: nowrap;
+         overflow: hidden;
+         text-overflow: ellipsis;
+         transform-origin: left bottom;
+         transform: translate(0, 1.2rem) scale(1.2);
+      }
+
+      ::-webkit-input-placeholder {
+         opacity: 0;
+         transition: inherit;
+      }
+
+      input:focus::-webkit-input-placeholder {
+         opacity: 1;
+      }
+
+      input:not(:placeholder-shown)+label,
+      input:focus+label {
+         font-family: Roboto;
+         font-style: normal;
+         font-weight: 500;
+         margin-left: 4px;
+         font-size: 6px;
+         transform: translate(0, -6px);
+         cursor: pointer;
+      }
+   </style>
+</head>
+
+<body>
+   <div class="container">
+      <div class="header">
+         <div class="item1">
+            {{name}}
+         </div>
+         <div class="item2">
+            <div class="colored">
+            </div>
+         </div>
+      </div>
+      <div class="line"></div>
+      <form class="content" action="">
+         <div class="wrapper">
+            <div class="left">
+               <div class="item3">
+                  <span class='field'>
+                     <input type="text" id="recipe" name="recipe" placeholder="recipe" required value="{{name}}" />
+                     <label for="recipe">Recipe</label>
+                  </span>
+               </div>
+
+               <div class="wrap">
+                  <div class="item4">
+                     <span class='field'>
+                        <input type="text" id="order" name="order" placeholder="order no" required value="{{order}}" />
+                        <label for="order">Ord no.</label>
+                     </span>
+                  </div>
+                  <div class="item5">
+                     <span class='field'>
+                        <input type="text" id="best" name="best" placeholder="best by" required value="{{best}}" />
+                        <label for="best">Best by</label>
+                     </span>
+                  </div>
+               </div>
+            </div>
+            <div class="item6">qr</div>
+         </div>
+      </form>
+   </div>
+</body>
+
+</html>
