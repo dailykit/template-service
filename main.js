@@ -1,6 +1,13 @@
 import fs from 'fs'
 import express from 'express'
 import puppeteer from 'puppeteer'
+const videoshow = require('videoshow')
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
+var ffprobe = require('ffprobe-static');
+ffmpeg.setFfprobePath(ffprobe.path);
+const nodeHtmlToImage = require('node-html-to-image')
 const app = express()
 
 const createImage = async function (html, nameOfImage = 'image') {
@@ -14,7 +21,11 @@ const createImage = async function (html, nameOfImage = 'image') {
 }
 
 const createVideo = async function (html) {
-   const images = getFiles('./output');
+   //const images = getFiles('./output');
+   const images = [
+      './assets/images/page1.png',
+      './assets/images/page2.png',
+   ]
    await videoshow(images)
       .save('video.mp4')
       .on('start', function () {
@@ -45,9 +56,9 @@ app.get('/', async (req, res) => {
             const page = await browser.newPage()
             await page.setContent(result, { waitUntil: 'networkidle0' })
             const buffer = await page.pdf({
-               width: parsed.size.width,
-               height: parsed.size.height,
-               // width: "29.7cm",
+               // width: parsed.size.width,
+               // height: parsed.size.height,
+               width: "10cm",
                // height: "21cm",
                path: `${parsed.type}.pdf`
             })
@@ -58,9 +69,11 @@ app.get('/', async (req, res) => {
          }
          case 'image':
             createImage(result);
+            return res.send(result)
             break;
          case 'video':
             createVideo(result);
+            return res.send(result)
             break;
          default:
             throw Error('Invalid Format')
