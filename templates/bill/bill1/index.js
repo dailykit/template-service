@@ -49,6 +49,18 @@ const ORGANIZATION = `
    }
 `
 
+const normalizeAddress = address => {
+   if (!address) return ''
+   let result = ''
+   if (address.line1) result += `${address.line1}, `
+   if (address.line2) result += `${address.line2}, `
+   if (address.city) result += `${address.city}, `
+   if (address.state) result += `${address.state}, `
+   if (address.country) result += `${address.country}, `
+   if (address.zipcode) result += `${address.zipcode}, `
+   return result
+}
+
 const bill = async data => {
    try {
       const parsed = await JSON.parse(data)
@@ -76,10 +88,10 @@ const bill = async data => {
          tax: `$${order.tax}`,
          customerPhone: customerPhone,
          discount: `$${order.discount}`,
-         amountPaid: `$${order.amountPaid}`,
+         amountPaid: `$${order.amountPaid || ''}`,
          deliveryPrice: `$${order.deliveryPrice}`,
-         orgAddress: `${orgAddress.line1}, ${orgAddress.line2}, ${orgAddress.city}, ${orgAddress.state}, ${orgAddress.zip}`,
-         customerAddress: `${customerAddress.line1}, ${customerAddress.line2}, ${customerAddress.city}, ${customerAddress.state}, ${customerAddress.country}, ${customerAddress.zipcode}`,
+         orgAddress: normalizeAddress(orgAddress),
+         customerAddress: normalizeAddress(customerAddress),
          items: [
             ...order.orderMealKitProducts.map(product => ({
                title: product.simpleRecipeProduct.name,
@@ -97,6 +109,7 @@ const bill = async data => {
       })
       return response
    } catch (error) {
+      console.log('error', error)
       throw Error(error.message)
    }
 }
