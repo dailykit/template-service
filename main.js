@@ -20,7 +20,6 @@ app.get('/', async (req, res) => {
             const page = await browser.newPage()
             await page.setContent(result)
             const buffer = await page.pdf({
-               width: '10cm',
                path: `${parsed.type}.pdf`
             })
             await browser.close()
