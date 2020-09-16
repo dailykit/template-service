@@ -6,46 +6,54 @@
 **Receipts**
 - bill
   - bill1
-    - customer, restaurant address
-    - ordered items list with prices
-    - charges breakdown
-    - restaurant branding.
+    - [x] customer, restaurant address
+    - [x] ordered items list with prices
+    - [x] charges breakdown
+    - [x] restaurant branding.
 
 - label
   - sachet1
-    - order id
-    - product id
-    - recipe name
-    - sachet quantity
-    - sachet QR code
+    - [x] order id
+    - [x] product id
+    - [x] recipe name
+    - [x] sachet quantity
+    - [x] sachet QR code
   - mealkit_product1
-    - order id
-    - product id
-    - recipe name
-    - servings
-    - product QR code
+    - [x] order id
+    - [x] product id
+    - [x] recipe name
+    - [x] servings
+    - [x] product QR code
   - inventory_product1
-    - order id
-    - product id
-    - product name
-    - quantity
-    - product QR code
+    - [x] order id
+    - [x] product id
+    - [x] product name
+    - [x] quantity
+    - [x] product QR code
   - readytoeat_product1
-    - order id
-    - product id
-    - recipe name
-    - servings
-    - product QR code
+    - [x] order id
+    - [x] product id
+    - [x] recipe name
+    - [x] servings
+    - [x] product QR code
 - KOT
   - product_kot1
-    - order id
-    - customer details
-    - fulfillment type
-    - ready by time
-    - cases
-      - single station
-        - single product type
-        - multiple product type
-      - multiple station
-        - single product type
-        - multiple product type
+    - [x] order id
+    - [x] customer details
+    - [x] fulfillment type
+    - [x] ready by time
+    - [x] cases
+      - [x] single station
+        - [x] single product type
+        - [x] multiple product type
+      - [x] multiple station
+        - [x] single product type
+        - [x] multiple product type
+  - sachet_kot1
+    - [x] order id
+    - [x] customer details
+    - [x] fulfillment type
+    - [x] ready by time
+    - [x] cases
+      - [x] single station
+      - [x] multiple station
