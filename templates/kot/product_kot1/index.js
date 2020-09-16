@@ -2,13 +2,6 @@ import pug from 'pug'
 
 import client from '../../../lib/graphql'
 
-/*
-http://localhost:4000?template={"name":"product_kot1","type":"kot","format":"html"}&data={"order":{"id":"651"},"product":{"types":["mealKit"]},"station":{"ids":[12]}}
-http://localhost:4000?template={"name":"product_kot1","type":"kot","format":"html"}&data={"order":{"id":"651"},"product":{"types":["mealKit","readyToEat","inventory"]},"station":{"ids":[12]}}
-http://localhost:4000?template={"name":"product_kot1","type":"kot","format":"html"}&data={"order":{"id":"651"},"product":{"types":["mealKit"]},"station":{"ids":[12,13,14]}}
-http://localhost:4000?template={"name":"product_kot1","type":"kot","format":"html"}&data={"order":{"id":"651"},"product":{"types":["mealKit","readyToEat","inventory"]},"station":{"ids":[12,13,14]}}
-*/
-
 const kot = async data => {
    try {
       const {
@@ -61,8 +54,6 @@ const kot = async data => {
          if (node.inventoryProduct.sachetItemId && object.supplier.item.name) {
             object.supplier.item.name += ` - ${node.inventoryProduct.sachetItem.unitSize}${node.inventoryProduct.sachetItem.unit}`
          }
-
-         console.log(object)
 
          return object
       })
@@ -154,7 +145,6 @@ const kot = async data => {
       })
       return response
    } catch (error) {
-      console.log('error', error)
       throw Error(error.message)
    }
 }
