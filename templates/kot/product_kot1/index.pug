@@ -33,9 +33,10 @@ html
                            span Name: #{item.supplier.name}
                         if(item.supplier.item.name)
                            span Item: #{item.supplier.item.name}
-                     section.flex.flex-col
-                        h3.font-bold Station
-                        span #{item.station}
+                     if stationName === null
+                        section.flex.flex-col
+                           h3.font-bold Station
+                           span #{item.station}
       if (productType==="mealKit" || productType==="multiple") && mealKits.length > 0
          section.mb-4.w-full.flex.flex-col
             +section_header('MEAL KIT', mealKits.length)
@@ -48,9 +49,10 @@ html
                      +product_header(item.name,item.quantity)
                      section.flex.flex-col
                         h3 Servings: #{item.serving}
-                     section.flex.flex-col
-                        h3.font-bold Station
-                        span #{item.station}
+                     if stationName === null
+                        section.flex.flex-col
+                           h3.font-bold Station
+                           span #{item.station}
       if (productType==="readyToEat" || productType==="multiple") && readyToEats.length > 0
          section.mb-4.w-full.flex.flex-col
             +section_header('READY TO EAT', readyToEats.length)
@@ -63,14 +65,19 @@ html
                      +product_header(item.name,item.quantity)
                      section.flex.flex-col
                         h3 Servings: #{item.serving}
-                     section.flex.flex-col
-                        h3.font-bold Station
-                        span #{item.station}
+                     if stationName === null
+                        section.flex.flex-col
+                           h3.font-bold Station
+                           span #{item.station}
       section
          +section_header('ORDER INFO', `ORD#${id}`)
          header.mt-2.flex.justify-between
             h2 #{fulfillmentType}
             span #{readyBy}
+         if stationName !== null
+            section.mt-2.flex.flex-col
+               h3.font-bold Station: 
+                  span.font-normal #{stationName}
          main.my-2.flex.flex-col
             h2 #{customer.customerFirstName} #{customer.customerLastName}
             span Email: #{customer.customerEmail}

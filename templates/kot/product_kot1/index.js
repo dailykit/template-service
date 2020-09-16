@@ -17,6 +17,8 @@ const kot = async data => {
          }
       })
 
+      let stationName = null
+
       const inventories = order.orderInventory.nodes.map(node => {
          const object = {
             name: node.inventoryProduct.name,
@@ -35,6 +37,10 @@ const kot = async data => {
 
          if (node.assemblyStationId) {
             object.station = node.assemblyStation.name
+         }
+
+         if (station.ids.length === 1) {
+            stationName = node.assemblyStation.name
          }
 
          if (node.inventoryProduct.supplierItemId) {
@@ -66,6 +72,10 @@ const kot = async data => {
          if (node.comboProductComponentId) {
             name += ` (${node.comboProductComponent.label})`
          }
+
+         if (station.ids.length === 1) {
+            stationName = node.assemblyStation.name
+         }
          return {
             name,
             quantity: node.quantity,
@@ -83,6 +93,10 @@ const kot = async data => {
          }
          if (node.comboProductComponentId) {
             name += ` (${node.comboProductComponent.label})`
+         }
+
+         if (station.ids.length === 1) {
+            stationName = node.assemblyStation.name
          }
          return {
             name,
@@ -140,6 +154,7 @@ const kot = async data => {
          inventories,
          readyToEats,
          productType,
+         stationName,
          fulfillmentType,
          customer: order.customer
       })
