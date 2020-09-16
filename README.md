@@ -36,3 +36,16 @@
     - recipe name
     - servings
     - product QR code
+- KOT
+  - product_kot1
+    - order id
+    - customer details
+    - fulfillment type
+    - ready by time
+    - cases
+      - single station
+        - single product type
+        - multiple product type
+      - multiple station
+        - single product type
+        - multiple product type
