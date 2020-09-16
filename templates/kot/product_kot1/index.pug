@@ -17,7 +17,7 @@ html
       link(href='https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css' rel="stylesheet")
    body.px-3
       div.h-16
-      if productType==="inventory" || productType==="multiple"
+      if (productType==="inventory" || productType==="multiple") && inventories.length > 0
          section.mb-4.w-full.flex.flex-col
             +section_header('INVENTORY', inventories.length)
             section.flex.justify-between
@@ -36,7 +36,7 @@ html
                      section.flex.flex-col
                         h3.font-bold Station
                         span #{item.station}
-      if productType==="mealKit" || productType==="multiple"
+      if (productType==="mealKit" || productType==="multiple") && mealKits.length > 0
          section.mb-4.w-full.flex.flex-col
             +section_header('MEAL KIT', mealKits.length)
             section.flex.justify-between
@@ -51,7 +51,7 @@ html
                      section.flex.flex-col
                         h3.font-bold Station
                         span #{item.station}
-      if productType==="readyToEat" || productType==="multiple"
+      if (productType==="readyToEat" || productType==="multiple") && readyToEats.length > 0
          section.mb-4.w-full.flex.flex-col
             +section_header('READY TO EAT', readyToEats.length)
             section.flex.justify-between
