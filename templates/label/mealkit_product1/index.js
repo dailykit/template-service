@@ -37,7 +37,7 @@ const label = async data => {
          JSON.stringify({
             type: 'meal_kit',
             product_id: parsed.id,
-            order_id: parsed.orderId
+            order_id: product.orderId
          })
       )
 

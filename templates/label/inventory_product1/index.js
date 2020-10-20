@@ -38,7 +38,7 @@ const label = async data => {
          JSON.stringify({
             type: 'inventory',
             product_id: parsed.id,
-            order_id: parsed.orderId
+            order_id: product.orderId
          })
       )
 
