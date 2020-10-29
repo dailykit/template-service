@@ -167,7 +167,7 @@ const bill = async data => {
          customerPhone: customerPhone,
          discount: `$${order.discount}`,
          restaurant: settings.brand.name,
-         orgPhone: settings.contanct.phoneNo,
+         orgPhone: settings.contact.phoneNo,
          amountPaid: `$${order.amountPaid || ''}`,
          deliveryPrice: `$${order.deliveryPrice}`,
          orgAddress: normalizeAddress(settings.address),
