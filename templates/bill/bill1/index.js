@@ -119,7 +119,7 @@ const bill = async data => {
             email: ''
          }
       }
-      if (cart.cartSource === 'a-la-carte') {
+      if (order.orderCart.cartSource === 'a-la-carte') {
          const { brand = {} } = client.request(BRAND_ON_DEMAND_SETTING, {
             id: order.orderCart.brandId
          })
@@ -137,7 +137,7 @@ const bill = async data => {
                settings.address = address
             }
          }
-      } else if (cart.cartSource === 'subscription') {
+      } else if (order.orderCart.cartSource === 'subscription') {
          const { brand = {} } = client.request(BRAND_SUBSCRIPTION_SETTING, {
             id: order.orderCart.brandId
          })
