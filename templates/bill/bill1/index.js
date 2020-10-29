@@ -139,7 +139,7 @@ const bill = async data => {
          }
       } else if (cart.cartSource === 'subscription') {
          const { brand = {} } = client.request(BRAND_SUBSCRIPTION_SETTING, {
-            id: cart.brandId
+            id: order.orderCart.brandId
          })
          if ('brand' in brand) {
             settings.brand = brand.brand.length > 0 ? brand.brand[0].value : {}
