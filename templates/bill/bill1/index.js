@@ -13,6 +13,10 @@ const ORDER = `
          amountPaid
          deliveryInfo
          deliveryPrice
+         orderCart {
+            cartSource
+            brandId
+         }
          orderInventoryProducts {
             price
             inventoryProduct {
@@ -35,16 +39,52 @@ const ORDER = `
    }
 `
 
-const ORGANIZATION = `
-   query restaurant{
-      address: storeSettings(where: {identifier: {_eq: "Location"}}) {
-         value
+const BRAND_ON_DEMAND_SETTING = `
+   query brand($id: Int!) {
+      brand(id: $id) {
+         brand: onDemandSettings(
+            where: { onDemandSetting: { identifier: { _eq: "Brand Name" } } }
+         ) {
+            value
+         }
+         address: onDemandSettings(
+            where: { onDemandSetting: { identifier: { _eq: "Location" } } }
+         ) {
+            value
+         }
+         contact: onDemandSettings(
+            where: { onDemandSetting: { identifier: { _eq: "Contact" } } }
+         ) {
+            value
+         }
       }
-      contact: storeSettings(where: {identifier: {_eq: "Contact"}}) {
-         value
-      }
-      title: storeSettings(where: {identifier: {_eq: "Brand Name"}}) {
-         value
+   }
+`
+
+export const BRAND_SUBSCRIPTION_SETTING = `
+   query brand($id: Int!) {
+      brand(id: $id) {
+         brand: subscriptionStoreSettings(
+            where: {
+               subscriptionStoreSetting: { identifier: { _eq: "theme-brand" } }
+            }
+         ) {
+            name: value(path: "name")
+         }
+         address: subscriptionStoreSettings(
+            where: {
+               subscriptionStoreSetting: { identifier: { _eq: "Location" } }
+            }
+         ) {
+            value
+         }
+         contact: subscriptionStoreSettings(
+            where: {
+               subscriptionStoreSetting: { identifier: { _eq: "Contact" } }
+            }
+         ) {
+            value
+         }
       }
    }
 `
@@ -69,10 +109,50 @@ const bill = async data => {
          id: parsed.id.toString()
       })
 
-      const { address, contact, title } = await client.request(ORGANIZATION)
-      const { address: orgAddress } = address[0].value
-      const { phoneNo: orgPhoneNo } = contact[0].value
-      const { name: orgName } = title[0].value
+      const settings = {
+         brand: {
+            name: ''
+         },
+         address: {},
+         contact: {
+            phoneNo: '',
+            email: ''
+         }
+      }
+      if (order.orderCart.cartSource === 'a-la-carte') {
+         const { brand = {} } = client.request(BRAND_ON_DEMAND_SETTING, {
+            id: order.orderCart.brandId
+         })
+         if ('brand' in brand) {
+            settings.brand = brand.brand.length > 0 ? brand.brand[0].value : {}
+         }
+         if ('contact' in brand) {
+            settings.contact =
+               brand.contact.length > 0 ? brand.contact[0].value : {}
+         }
+         if ('address' in brand) {
+            const address =
+               brand.address.length > 0 ? brand.address[0].value : {}
+            if ('address' in address) {
+               settings.address = address
+            }
+         }
+      } else if (order.orderCart.cartSource === 'subscription') {
+         const { brand = {} } = client.request(BRAND_SUBSCRIPTION_SETTING, {
+            id: order.orderCart.brandId
+         })
+         if ('brand' in brand) {
+            settings.brand = brand.brand.length > 0 ? brand.brand[0].value : {}
+         }
+         if ('contact' in brand) {
+            settings.contact =
+               brand.contact.length > 0 ? brand.contact[0].value : {}
+         }
+         if ('address' in brand) {
+            settings.address =
+               brand.address.length > 0 ? brand.address[0].value : {}
+         }
+      }
 
       const {
          customerPhone,
@@ -83,14 +163,14 @@ const bill = async data => {
 
       const response = await compiler({
          id: parsed.id,
-         restaurant: orgName,
-         orgPhone: orgPhoneNo,
          tax: `$${order.tax}`,
          customerPhone: customerPhone,
          discount: `$${order.discount}`,
+         restaurant: settings.brand.name,
+         orgPhone: settings.contact.phoneNo,
          amountPaid: `$${order.amountPaid || ''}`,
          deliveryPrice: `$${order.deliveryPrice}`,
-         orgAddress: normalizeAddress(orgAddress),
+         orgAddress: normalizeAddress(settings.address),
          customerAddress: normalizeAddress(customerAddress),
          items: [
             ...order.orderMealKitProducts.map(product => ({

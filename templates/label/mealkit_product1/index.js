@@ -35,7 +35,9 @@ const label = async data => {
 
       const qrCode = await QR.toDataURL(
          JSON.stringify({
-            product: { id: parsed.id }
+            type: 'meal_kit',
+            product_id: parsed.id,
+            order_id: product.orderId
          })
       )
 
