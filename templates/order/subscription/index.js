@@ -51,9 +51,7 @@ const email = async data => {
          if ('address' in brand) {
             const address =
                brand.address.length > 0 ? brand.address[0].value : {}
-            if ('address' in address) {
-               restaurant.address = normalizeAddress(address)
-            }
+            restaurant.address = normalizeAddress(address)
          }
       } else if (order.orderCart.cartSource === 'subscription') {
          const { brand = {} } = await client.request(
