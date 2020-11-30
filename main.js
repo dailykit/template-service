@@ -18,16 +18,16 @@ const isProd = process.env.NODE_ENV === 'production' ? true : false
 const apolloserver = new ApolloServer({
    schema,
    playground: {
-      endpoint: `${process.env.ENDPOINT}:${PORT}/graphql`
+      endpoint: `${process.env.ENDPOINT}/graphql`
    },
-   introspection: isProd ? false : true,
+   introspection: true,
    validationRules: [depthLimit(11)],
    formatError: err => {
       if (err.message.includes('ENOENT'))
          return isProd ? new Error('No such folder or file exists!') : err
       return isProd ? new Error(err) : err
    },
-   debug: isProd ? false : true,
+   debug: true,
    context: {
       root: process.env.FS_PATH,
       media: process.env.MEDIA_PATH
