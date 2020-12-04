@@ -27,6 +27,6 @@
       "nodemon": "^2.0.4"
    },
    "nodemonConfig": {
-    "ignore": ["templates/*"],
+    "ignore": ["templates/*"]
   }
 }
