@@ -23,6 +23,7 @@ const apolloserver = new ApolloServer({
    introspection: true,
    validationRules: [depthLimit(11)],
    formatError: err => {
+      console.log(err)
       if (err.message.includes('ENOENT'))
          return isProd ? new Error('No such folder or file exists!') : err
       return isProd ? new Error(err) : err
