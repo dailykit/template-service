@@ -6,15 +6,17 @@ const kot = async data => {
    try {
       const {
          order: { id } = {},
-         station = {},
+         station = { ids: [] },
          product = {}
       } = await JSON.parse(data)
 
       const { order = {} } = await client.request(ORDER, {
          id: id,
-         assemblyStationId: {
-            _in: station.ids
-         }
+         ...(station.ids.length > 0 && {
+            assemblyStationId: {
+               _in: station.ids
+            }
+         })
       })
 
       let stationName = null
@@ -110,26 +112,13 @@ const kot = async data => {
 
       let productType = ''
 
-      if (station.ids.length === 1) {
-         // if one station
-         if (product.types.length === 1) {
-            // if one product type
-            const { types } = product
-            productType = types[0]
-         } else if (product.types.length > 1) {
-            // if multiple product type
-            productType = 'multiple'
-         }
-      } else if (station.ids.length > 1) {
-         // if multiple station
-         if (product.types.length === 1) {
-            // if one product type
-            const { types } = product
-            productType = types[0]
-         } else if (product.types.length > 1) {
-            // if multiple product type
-            productType = 'multiple'
-         }
+      if (product.types.length === 1) {
+         // if one product type
+         const { types } = product
+         productType = types[0]
+      } else if (product.types.length > 1) {
+         // if multiple product type
+         productType = 'multiple'
       }
 
       const compiler = await pug.compileFile(__dirname + '/index.pug')
@@ -172,7 +161,7 @@ const capitalize = (str, lower = false) =>
    )
 
 const ORDER = `
-   query order($id: oid!, $assemblyStationId: Int_comparison_exp!) {
+   query order($id: oid!, $assemblyStationId: Int_comparison_exp) {
       order(id: $id) {
          fulfillmentType
          readyByTimestamp
