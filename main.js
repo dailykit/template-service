@@ -74,4 +74,15 @@ app.get('/', async (req, res) => {
    }
 })
 
+app.get('/getfile/:path(*)', async (req, res) => {
+   try {
+      const filePath = req.params.path
+      console.log(filePath)
+      const method = fs.readFileSync(`./templates/${filePath}`, 'utf-8')
+      return res.send(method)
+   } catch (err) {
+      return res.send(err)
+   }
+})
+
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))
