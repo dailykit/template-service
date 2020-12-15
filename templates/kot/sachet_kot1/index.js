@@ -4,16 +4,11 @@ import client from '../../../lib/graphql'
 
 const kot = async data => {
    try {
-      const {
-         order: { id = '' } = {},
-         station = { ids: [] }
-      } = await JSON.parse(data)
+      const { order: { id = '' } = {}, station = {} } = await JSON.parse(data)
 
       const { order = {} } = await client.request(ORDER, {
          id,
-         ...(station.ids.length > 0 && {
-            packingStationId: { _in: station.ids }
-         })
+         packingStationId: { _in: station.ids }
       })
 
       let stationName = null
@@ -45,7 +40,7 @@ const kot = async data => {
                      }
                   },
                   packaging: { name: 'N/A' },
-                  ...(item.stationId && { station: item.station.name }),
+                  station: item.station.name,
                   quantity: `${item.quantity}${item.unit}`
                }
                if (station.ids.length === 1) {
@@ -126,7 +121,7 @@ const capitalize = (str, lower = false) =>
    )
 
 const ORDER = `
-   query order($id: oid!, $packingStationId: Int_comparison_exp) {
+   query order($id: oid!, $packingStationId: Int_comparison_exp!) {
       order(id: $id) {
          fulfillmentType
          readyByTimestamp
@@ -172,7 +167,7 @@ const ORDER = `
                      quantity
                      ingredient: ingredientName
                      processing: processingName
-                     stationId: packingStationId
+                     packingStationId
                      station: packingStation {
                         name
                      }
