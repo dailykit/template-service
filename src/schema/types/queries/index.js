@@ -4,7 +4,7 @@ const typeDefs = gql`
    type Query {
       getFolderWithFiles(path: String): FolderWithFiles
       getNestedFolders(path: String): Folder
-      getFiles(path: String!, offset: Int!, limit: Int!): [File]!
+      getFiles(path: String!, offset: Int, limit: Int): [File]!
       getFile(path: String!): File
       getCommitLog(path: String!): [Commit]
       getCommits(path: String!, commits: [String]!): [Commit]

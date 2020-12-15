@@ -65,10 +65,18 @@ const resolvers = {
       getFiles: async (_, args, { root }) => {
          try {
             const files = await getFilePaths(`${root}${args.path}`)
-            const page = await files
-               .slice(args.offset, args.limit + args.offset)
-               .map(item => item.replace(new RegExp(root), ''))
-            const result = await page.map(file =>
+            const pages = await files.map(item =>
+               item.replace(new RegExp(root), '')
+            )
+            if (
+               'offset' in args &&
+               args.offset &&
+               'limit' in args &&
+               args.limit
+            ) {
+               pages = pages.slice(args.offset, args.limit + args.offset)
+            }
+            const result = await pages.map(file =>
                resolvers.Query.getFile('', { path: file }, { root })
             )
             return result
