@@ -1,6 +1,11 @@
 import pug from 'pug'
 import client from '../../../lib/graphql'
-import { format_currency } from '../../../utils'
+
+const format_currency = (amount = 0) =>
+   new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: process.env.CURRENCY
+   }).format(amount)
 
 const normalizeAddress = address => {
    if (!address) return ''
