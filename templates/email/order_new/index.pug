@@ -1,7 +1,7 @@
 mixin billing(title, amount)
    section(style="width: 100%;").space-x-3.w-full.flex.justify-end
-      span(style="--tw-text-opacity: 1;color: rgba(55, 65, 81, var(--tw-text-opacity));display:inline-block;width:calc(100% - 4rem);text-align:right;").text-gray-700.justify-end.inline-flex.flex-1 #{title}
-      span(style="float:right;width: 4rem;text-align:right;").inline-flex.w-16.justify-end #{amount}
+      span(style="--tw-text-opacity: 1;color: rgba(55, 65, 81, var(--tw-text-opacity));display:inline-block;width:calc(100% - 6rem);text-align:right;").text-gray-700.justify-end.inline-flex.flex-1 #{title}
+      span(style="float:right;width: 6rem;text-align:right;").inline-flex.w-16.justify-end #{amount}
 
 html
    head
@@ -16,8 +16,7 @@ html
             else
                h2 #{restaurant.brand.name}
          main(style="padding:0.75rem 0;").py-3.space-y-3
-            p(style="--tw-text-opacity: 1;color: rgba(55, 65, 81, var(--tw-text-opacity));").text-gray-700 Thanks for choosing #{restaurant.brand.name}, #{customer.first_name}! Your order has been 
-               span(style="--tw-text-opacity: 1;color: rgba(4, 120, 87, var(--tw-text-opacity));font-weight: 700;").font-bold.text-green-700 DELIVERED
+            p(style="--tw-text-opacity: 1;color: rgba(55, 65, 81, var(--tw-text-opacity));").text-gray-700 Hurray! You’ve received a new order. Please check your order at order app and immediately confirm it.
             section.flex.space-x-4
                h3 Order No: #{id}
                h3 Restaurant: #{restaurant.brand.name}
@@ -25,7 +24,7 @@ html
                p(style="--tw-text-opacity: 1;color: rgba(55, 65, 81, var(--tw-text-opacity));").text-gray-700 Here are your order details:
                div(style="margin-top: 0.5rem;").mt-2
                   h3(style="--tw-text-opacity: 1;color: rgba(55, 65, 81, var(--tw-text-opacity));").text-gray-700 Order Status:
-                  h4(style="--tw-text-opacity: 1;color: rgba(4, 120, 87, var(--tw-text-opacity));font-weight: 700;").font-bold.text-green-700 DELIVERED
+                  h4(style="--tw-text-opacity: 1;color: rgba(4, 120, 87, var(--tw-text-opacity));font-weight: 700;").font-bold.text-green-700 PENDING CONFIRMATION
                div(style="margin-top: 0.5rem;").mt-2
                   h3(style="--tw-text-opacity: 1;color: rgba(4, 120, 87, var(--tw-text-opacity));").text-gray-700 Ordered From:
                   h4(style="font-weight: 700;").font-bold #{restaurant.brand.name}
