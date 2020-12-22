@@ -7,7 +7,7 @@ html
    head
       title Order No.: #{id}
       meta(name="viewport" content="width=device-width, initial-scale=1.0")
-   body(style='--tw-bg-opacity: 1;background-color: rgba(209, 213, 219, var(--tw-bg-opacity));padding: 0.75rem 0;').bg-gray-300.py-3
+   body(style='--tw-bg-opacity: 1;background-color: rgba(209, 213, 219, var(--tw-bg-opacity));padding: 0.10rem 0;').bg-gray-300.py-3
       div(style='--tw-bg-opacity: 1;background-color: rgba(255, 255, 255, var(--tw-bg-opacity));border-radius: 0.25rem;margin:0 auto;padding: 1rem;' class="sm:w-11/12 lg:w-8/12 xl:w-6/12").rounded.mx-auto.p-4.bg-white
          header(style='width: 100%;border-bottom: 1px solid #e5e7eb;padding:0.75rem 0;').w-full.flex.flex-col.items-center.py-3.border-b
             if restaurant.brand.logo
@@ -16,8 +16,7 @@ html
             else
                h2 #{restaurant.brand.name}
          main(style="padding:0.75rem 0;").py-3.space-y-3
-            p(style="--tw-text-opacity: 1;color: rgba(55, 65, 81, var(--tw-text-opacity));").text-gray-700 Thanks for choosing #{restaurant.brand.name}, #{customer.first_name}! Your order has been 
-               span(style="color: #EF4444;font-weight: 700;").font-bold.text-green-700 CANCELLED
+            p(style="--tw-text-opacity: 1;color: rgba(55, 65, 81, var(--tw-text-opacity));").text-gray-700 We regret to inform you that the following order could not be fulfilled and thus has been cancelled. Your refund is initiated for any payment deducted for this order. Please reach out at #{restaurant.contact.phoneNo} or #{restaurant.contact.email} for any further questions
             section.flex.space-x-4
                h3 Order No: #{id}
                h3 Restaurant: #{restaurant.brand.name}
