@@ -38,7 +38,7 @@ const bill = async data => {
          }
       }
       if (order.orderCart.cartSource === 'a-la-carte') {
-         const { brand = {} } = client.request(BRAND_ON_DEMAND_SETTING, {
+         const { brand = {} } = await client.request(BRAND_ON_DEMAND_SETTING, {
             id: order.orderCart.brandId
          })
          if ('brand' in brand) {
@@ -54,9 +54,12 @@ const bill = async data => {
             settings.address = address
          }
       } else if (order.orderCart.cartSource === 'subscription') {
-         const { brand = {} } = client.request(BRAND_SUBSCRIPTION_SETTING, {
-            id: order.orderCart.brandId
-         })
+         const { brand = {} } = await client.request(
+            BRAND_SUBSCRIPTION_SETTING,
+            {
+               id: order.orderCart.brandId
+            }
+         )
          if ('brand' in brand) {
             settings.brand = brand.brand.length > 0 ? brand.brand[0].value : {}
          }
@@ -86,6 +89,7 @@ const bill = async data => {
          orgAddress: normalizeAddress(settings.address),
          customerAddress: normalizeAddress(customerAddress),
          discount: format_currency(Number(order.discount) || 0),
+         itemTotal: format_currency(Number(order.itemTotal) || 0),
          amountPaid: format_currency(Number(order.amountPaid) || 0),
          deliveryPrice: format_currency(Number(order.deliveryPrice) || 0),
          items: [
