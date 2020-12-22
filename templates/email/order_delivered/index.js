@@ -32,51 +32,71 @@ const bill = async data => {
             name: '',
             logo: ''
          },
-         address: '',
+         address: {
+            lat: '',
+            lng: '',
+            city: '',
+            line1: '',
+            line2: '',
+            state: '',
+            country: '',
+            zipcode: ''
+         },
          contact: {
             phoneNo: '',
             email: ''
          }
       }
+
       if (order.orderCart.cartSource === 'a-la-carte') {
-         const { brand = {} } = await client.request(BRAND_ON_DEMAND_SETTING, {
+         const { brand } = await client.request(BRAND_ON_DEMAND_SETTING, {
             id: order.orderCart.brandId
          })
-         if ('name' in brand) {
-            settings.brand.name =
-               brand.name.length > 0 ? brand.name[0].name : {}
-         }
-         if ('logo' in brand) {
-            settings.brand.logo = brand.logo.length > 0 ? brand.logo[0].url : {}
-         }
-         if ('contact' in brand) {
-            settings.contact =
-               brand.contact.length > 0 ? brand.contact[0].value : {}
-         }
-         if ('address' in brand) {
-            const address =
-               brand.address.length > 0 ? brand.address[0].value : {}
-            settings.address = normalizeAddress(address)
+         if (brand) {
+            if (brand.brand.length > 0) {
+               settings.brand.name = brand.brand[0].name || ''
+            }
+            if (brand.logo.length > 0) {
+               settings.brand.logo = brand.logo[0].url || ''
+            }
+            if (brand.contact.length > 0) {
+               settings.contact.email = brand.contact[0].email || ''
+               settings.contact.phoneNo = brand.contact[0].phoneNo || ''
+            }
+            if ('address' in brand) {
+               settings.address.line1 = brand.address[0].line1 || ''
+               settings.address.line2 = brand.address[0].line2 || ''
+               settings.address.city = brand.address[0].city || ''
+               settings.address.state = brand.address[0].state || ''
+               settings.address.country = brand.address[0].country || ''
+               settings.address.zipcode = brand.address[0].zipcode || ''
+               settings.address.lat = brand.address[0].lat || ''
+               settings.address.lng = brand.address[0].lng || ''
+            }
          }
       } else if (order.orderCart.cartSource === 'subscription') {
-         const { brand = {} } = await client.request(
-            BRAND_SUBSCRIPTION_SETTING,
-            {
-               id: order.orderCart.brandId
+         const { brand } = await client.request(BRAND_SUBSCRIPTION_SETTING, {
+            id: order.orderCart.brandId
+         })
+         if (brand) {
+            if (brand.brand.length > 0) {
+               settings.brand.name = brand.brand[0].name || ''
+               settings.brand.logo = brand.brand[0].logo || ''
             }
-         )
-         if ('brand' in brand) {
-            settings.brand = brand.brand.length > 0 ? brand.brand[0].value : {}
-         }
-         if ('contact' in brand) {
-            settings.contact =
-               brand.contact.length > 0 ? brand.contact[0].value : {}
-         }
-         if ('address' in brand) {
-            settings.address =
-               brand.address.length > 0
-                  ? normalizeAddress(brand.address[0].value)
-                  : {}
+            if (brand.contact.length > 0) {
+               settings.contact.email = brand.contact[0].email || ''
+               settings.contact.phoneNo = brand.contact[0].phoneNo || ''
+            }
+            if ('address' in brand) {
+               settings.address.line1 = brand.address[0].line1 || ''
+               settings.address.line2 = brand.address[0].line2 || ''
+               settings.address.city = brand.address[0].city || ''
+               settings.address.state = brand.address[0].state || ''
+               settings.address.country = brand.address[0].country || ''
+               settings.address.zipcode = brand.address[0].zipcode || ''
+               settings.address.lat = brand.address[0].lat || ''
+               settings.address.lng = brand.address[0].lng || ''
+            }
          }
       }
 
@@ -107,7 +127,10 @@ const bill = async data => {
       const response = await compiler({
          items,
          id: parsed.id,
-         restaurant: settings,
+         restaurant: {
+            ...settings,
+            address: normalizeAddress(settings.address)
+         },
          customer: {
             phone: customerPhone,
             first_name: customerFirstName,
@@ -174,8 +197,10 @@ const ORDER = `
 const BRAND_ON_DEMAND_SETTING = `
    query brand($id: Int!) {
       brand(id: $id) {
-         name: onDemandSettings(where: {onDemandSetting: {identifier: {_eq: "Brand Name"}}}) {
-            name: value(path:"name")
+         brand: onDemandSettings(
+            where: { onDemandSetting: { identifier: { _eq: "Brand Name" } } }
+         ) {
+            name: value(path: "name")
          }
          logo: onDemandSettings(where: {onDemandSetting: {identifier: {_eq: "Brand Logo"}}}) {
             url: value(path:"url")
@@ -183,12 +208,20 @@ const BRAND_ON_DEMAND_SETTING = `
          address: onDemandSettings(
             where: { onDemandSetting: { identifier: { _eq: "Location" } } }
          ) {
-            value
+            lat: value(path: "lat")
+            lng: value(path: "lng")
+            city: value(path: "city")
+            line1: value(path: "line1")
+            line2: value(path: "line2")
+            state: value(path: "state")
+            country: value(path: "country")
+            zipcode: value(path: "zipcode")
          }
          contact: onDemandSettings(
             where: { onDemandSetting: { identifier: { _eq: "Contact" } } }
          ) {
-            value
+            email: value(path: "email")
+            phoneNo: value(path: "phoneNo")
          }
       }
    }
@@ -210,14 +243,22 @@ export const BRAND_SUBSCRIPTION_SETTING = `
                subscriptionStoreSetting: { identifier: { _eq: "Location" } }
             }
          ) {
-            value
+            lat: value(path: "lat")
+            lng: value(path: "lng")
+            city: value(path: "city")
+            line1: value(path: "line1")
+            line2: value(path: "line2")
+            state: value(path: "state")
+            country: value(path: "country")
+            zipcode: value(path: "zipcode")
          }
          contact: subscriptionStoreSettings(
             where: {
                subscriptionStoreSetting: { identifier: { _eq: "Contact" } }
             }
          ) {
-            value
+            email: value(path: "email")
+            phoneNo: value(path: "phoneNo")
          }
       }
    }
