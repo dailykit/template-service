@@ -12,9 +12,11 @@ const kot = async data => {
 
       const { order = {} } = await client.request(ORDER, {
          id: id,
-         assemblyStationId: {
-            _in: station.ids
-         }
+         ...(station.ids.length > 0 && {
+            assemblyStationId: {
+               _in: station.ids
+            }
+         })
       })
 
       let stationName = null
@@ -108,7 +110,7 @@ const kot = async data => {
          }
       })
 
-      let productType = ''
+      let productType = 'multiple'
 
       if (station.ids.length === 1) {
          // if one station
@@ -147,6 +149,13 @@ const kot = async data => {
          capitalize(order.fulfillmentType.split('_').join(' '), true)
       )
 
+      console.log(productType)
+      console.log({
+         mealKits,
+         inventories,
+         readyToEats
+      })
+
       const response = await compiler({
          id,
          readyBy,
@@ -172,7 +181,7 @@ const capitalize = (str, lower = false) =>
    )
 
 const ORDER = `
-   query order($id: oid!, $assemblyStationId: Int_comparison_exp!) {
+   query order($id: oid!, $assemblyStationId: Int_comparison_exp) {
       order(id: $id) {
          fulfillmentType
          readyByTimestamp
