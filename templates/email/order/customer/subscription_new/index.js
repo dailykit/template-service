@@ -1,5 +1,5 @@
 import pug from 'pug'
-import client from '../../../lib/graphql'
+import client from '../../../../../lib/graphql'
 
 const format_currency = (amount = 0) =>
    new Intl.NumberFormat('en-US', {
@@ -88,8 +88,11 @@ const email = async data => {
          deliveryDate: ''
       }
 
-      if ('occurence' in order.orderCart) {
-         if ('fulfillmentDate' in order.orderCart.occurence) {
+      if ('occurence' in order.orderCart && order.orderCart.occurence) {
+         if (
+            'fulfillmentDate' in order.orderCart.occurence &&
+            order.orderCart.occurence.fulfillmentDate
+         ) {
             plan.deliveryDate = new Intl.DateTimeFormat('en-US', {
                year: 'numeric',
                month: 'short',
@@ -188,7 +191,11 @@ const email = async data => {
          billing,
          customer,
          products,
-         restaurant
+         restaurant,
+         id: order.id,
+         isTest: order.orderCart.isTest,
+         transactionId: order.transactionId,
+         paymentStatus: order.paymentStatus
       })
       return response
    } catch (error) {
@@ -206,9 +213,12 @@ const ORDER = `
          tax
          discount
          created_at
+         paymentStatus
+         transactionId
          pickup: deliveryInfo(path: "pickup.pickupInfo")
          dropoff: deliveryInfo(path: "dropoff.dropoffInfo")
          orderCart {
+            isTest
             cartInfo
             cartSource
             brandId

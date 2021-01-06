@@ -1,5 +1,6 @@
 import pug from 'pug'
-import client from '../../../lib/graphql'
+import moment from 'moment-timezone'
+import client from '../../../../../lib/graphql'
 
 const format_currency = (amount = 0) =>
    new Intl.NumberFormat('en-US', {
@@ -15,11 +16,11 @@ const normalizeAddress = address => {
    if (address.city) result += `${address.city}, `
    if (address.state) result += `${address.state}, `
    if (address.country) result += `${address.country}, `
-   if (address.zipcode) result += `${address.zipcode}, `
+   if (address.zipcode) result += `${address.zipcode}`
    return result
 }
 
-const bill = async data => {
+const order_new = async data => {
    try {
       const parsed = await JSON.parse(data)
 
@@ -46,7 +47,7 @@ const bill = async data => {
             email: ''
          }
       }
-      if (order.orderCart.cartSource === 'a-la-carte') {
+      if (order.source === 'a-la-carte') {
          const { brand } = await client.request(BRAND_ON_DEMAND_SETTING, {
             id: order.orderCart.brandId
          })
@@ -72,7 +73,7 @@ const bill = async data => {
                settings.address.lng = brand.address[0].lng || ''
             }
          }
-      } else if (order.orderCart.cartSource === 'subscription') {
+      } else if (order.source === 'subscription') {
          const { brand } = await client.request(BRAND_SUBSCRIPTION_SETTING, {
             id: order.orderCart.brandId
          })
@@ -103,7 +104,7 @@ const bill = async data => {
          customerAddress,
          customerFirstName,
          customerLastName
-      } = order.deliveryInfo.dropoff.dropoffInfo
+      } = order.customer
 
       const compiler = await pug.compileFile(__dirname + '/index.pug')
 
@@ -122,19 +123,82 @@ const bill = async data => {
          }))
       ]
 
+      const dropoff = {
+         startsAt: '',
+         endsAt: ''
+      }
+
+      if ('startsAt' in order.dropoff && order.dropoff.startsAt) {
+         dropoff.startsAt = moment(order.dropoff.startsAt)
+            .tz(process.env.TIMEZONE)
+            .format('ddd, DD MMM, YYYY HH:MMA')
+      }
+      if ('endsAt' in order.dropoff && order.dropoff.endsAt) {
+         dropoff.endsAt = moment(order.dropoff.endsAt)
+            .tz(process.env.TIMEZONE)
+            .format('ddd, DD MMM, YYYY HH:MMA')
+      }
+
+      const plan = {
+         title: '',
+         serving: '',
+         count: ''
+      }
+
+      if ('occurenceId' in order.orderCart && order.orderCart.occurenceId) {
+         if (
+            'subscriptionId' in order.orderCart.occurence &&
+            order.orderCart.occurence.subscriptionId
+         ) {
+            if (
+               'itemCountId' in order.orderCart.occurence.subscription &&
+               order.orderCart.occurence.subscription.itemCountId
+            ) {
+               plan.count =
+                  order.orderCart.occurence.subscription.itemCount.count
+               if (
+                  'servingId' in
+                     order.orderCart.occurence.subscription.itemCount &&
+                  order.orderCart.occurence.subscription.itemCount.servingId
+               ) {
+                  plan.serving =
+                     order.orderCart.occurence.subscription.itemCount.serving.size
+                  if (
+                     'titleId' in
+                        order.orderCart.occurence.subscription.itemCount
+                           .serving &&
+                     order.orderCart.occurence.subscription.itemCount.serving
+                        .titleId
+                  ) {
+                     plan.title =
+                        order.orderCart.occurence.subscription.itemCount.serving.title.title
+                  }
+               }
+            }
+         }
+      }
+
       const response = await compiler({
+         plan,
          items,
+         dropoff,
          id: parsed.id,
+         source: order.source,
+         status: order.orderStatus,
+         isTest: order.orderCart.isTest,
+         transactionId: order.transactionId,
+         paymentStatus: order.paymentStatus,
          restaurant: {
             ...settings,
             address: normalizeAddress(settings.address)
          },
          customer: {
             phone: customerPhone,
-            first_name: customerFirstName,
-            last_name: customerLastName,
+            firstName: customerFirstName,
+            lastName: customerLastName,
             address: normalizeAddress(customerAddress)
          },
+         tip: format_currency(Number(order.tip) || 0),
          tax: format_currency(Number(order.tax) || 0),
          discount: format_currency(Number(order.discount) || 0),
          itemTotal: format_currency(Number(order.itemTotal) || 0),
@@ -150,25 +214,51 @@ const bill = async data => {
    }
 }
 
-export default bill
+export default order_new
 
 const ORDER = `
    query order($id: oid!) {
       order(id: $id) {
          id
          tax
+         tip
+         source
          itemTotal
          discount
          currency
          itemTotal
          created_at
          amountPaid
+         orderStatus
          deliveryInfo
+         paymentStatus
+         transactionId
          deliveryPrice
          fulfillmentType
+         customer: deliveryInfo(path: "dropoff.dropoffInfo")
+         dropoff: deliveryInfo(path: "dropoff.window.requested")
+         cartId
          orderCart {
-            cartSource
+            isTest
             brandId
+            occurenceId: subscriptionOccurenceId
+            occurence: subscriptionOccurence {
+               subscriptionId
+               subscription {
+                  itemCountId: subscriptionItemCountId
+                  itemCount: subscriptionItemCount {
+                     count
+                     servingId: subscriptionServingId
+                     serving: subscriptionServing {
+                        size: servingSize
+                        titleId: subscriptionTitleId
+                        title: subscriptionTitle {
+                           title
+                        }
+                     }
+                  }
+               }
+            }
          }
          orderInventoryProducts {
             price
