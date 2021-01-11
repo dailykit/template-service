@@ -27,6 +27,8 @@ const email = async data => {
          id: parsed.id
       })
 
+      if (!order) throw 'No such order exists'
+
       const restaurant = {
          brand: {
             logo: {
@@ -41,24 +43,7 @@ const email = async data => {
             email: ''
          }
       }
-      if (order.orderCart.cartSource === 'a-la-carte') {
-         const { brand = {} } = await client.request(BRAND_ON_DEMAND_SETTING, {
-            id: order.orderCart.brandId
-         })
-         if ('brand' in brand) {
-            restaurant.brand =
-               brand.brand.length > 0 ? brand.brand[0].value : {}
-         }
-         if ('contact' in brand) {
-            restaurant.contact =
-               brand.contact.length > 0 ? brand.contact[0].value : {}
-         }
-         if ('address' in brand) {
-            const address =
-               brand.address.length > 0 ? brand.address[0].value : {}
-            restaurant.address = normalizeAddress(address)
-         }
-      } else if (order.orderCart.cartSource === 'subscription') {
+      if (order.source === 'subscription') {
          const { brand = {} } = await client.request(
             BRAND_SUBSCRIPTION_SETTING,
             {
@@ -159,16 +144,12 @@ const email = async data => {
       }
 
       const billing = {
-         base: format_currency(Number(order.orderCart.itemTotal) || 0),
-         delivery: format_currency(Number(order.orderCart.deliveryPrice) || 0),
-         addOnTotal: format_currency(Number(order.orderCart.addOnTotal) || 0),
-         total: format_currency(
-            Number(
-               order.orderCart.addOnTotal +
-                  order.orderCart.deliveryPrice +
-                  order.orderCart.itemTotal
-            ) || 0
-         )
+         tax: format_currency(Number(order.tax) || 0),
+         base: format_currency(Number(order.itemTotal) || 0),
+         total: format_currency(Number(order.amountPaid) || 0),
+         discount: format_currency(Number(order.discount) || 0),
+         delivery: format_currency(Number(order.deliveryPrice) || 0),
+         addOnTotal: format_currency(Number(order.orderCart.addOnTotal) || 0)
       }
 
       let products = []
@@ -199,8 +180,7 @@ const email = async data => {
       })
       return response
    } catch (error) {
-      console.log('error', error)
-      throw Error(error.message)
+      throw error
    }
 }
 
@@ -211,19 +191,20 @@ const ORDER = `
       order(id: $id) {
          id
          tax
+         source
          discount
+         itemTotal
          created_at
+         amountPaid
          paymentStatus
          transactionId
+         deliveryPrice
          pickup: deliveryInfo(path: "pickup.pickupInfo")
          dropoff: deliveryInfo(path: "dropoff.dropoffInfo")
          orderCart {
             isTest
             cartInfo
-            cartSource
             brandId
-            itemTotal
-            deliveryPrice
             addOnTotal
             occurence: subscriptionOccurence {
                fulfillmentDate
@@ -239,28 +220,6 @@ const ORDER = `
                   }
                }
             }
-         }
-      }
-   }
-`
-
-const BRAND_ON_DEMAND_SETTING = `
-   query brand($id: Int!) {
-      brand(id: $id) {
-         brand: onDemandSettings(
-            where: { onDemandSetting: { identifier: { _eq: "Brand Name" } } }
-         ) {
-            value
-         }
-         address: onDemandSettings(
-            where: { onDemandSetting: { identifier: { _eq: "Location" } } }
-         ) {
-            value
-         }
-         contact: onDemandSettings(
-            where: { onDemandSetting: { identifier: { _eq: "Contact" } } }
-         ) {
-            value
          }
       }
    }
