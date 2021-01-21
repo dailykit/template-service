@@ -22,10 +22,7 @@ const getNestedFolders = async url => {
          if (stats.isDirectory()) {
             let node = {}
             node.name = folder
-            node.path = `${url}/${folder}`
-               .split('/')
-               .filter(Boolean)
-               .join('/')
+            node.path = `${url}/${folder}`.split('/').filter(Boolean).join('/')
             let children = await getNestedFolders(`${url}/${folder}`)
             node.children = children
             return node
@@ -46,14 +43,14 @@ const getFolderWithFiles = async url => {
             const stats = fs.statSync(`${url}/${item}`)
             let node = {}
             node.name = item
-            node.path = `${url}/${item}`
-               .split('/')
-               .filter(Boolean)
-               .join('/')
+            node.path = `${url}/${item}`.split('/').filter(Boolean).join('/')
             node.createdAt = stats.birthtime
             if (stats.isFile()) {
                const fileData = await files.getFile(`${url}/${item}`)
+               const filePath = url.replace(process.env.FS_PATH, '')
+               const id = await dailygit.database.getFileId({ path: filePath })
                node.content = fileData.toString()
+               node.id = id
                node.size = stats.size
                node.type = 'file'
             } else if (stats.isDirectory()) {
@@ -123,5 +120,5 @@ module.exports = {
    deleteFolder,
    renameFolder,
    getNestedFolders,
-   getFolderWithFiles,
+   getFolderWithFiles
 }
