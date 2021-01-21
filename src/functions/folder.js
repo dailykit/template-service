@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const rimraf = require('rimraf')
-
+const database = require('./database')
 const git = require('isomorphic-git')
 git.plugins.set('fs', fs)
 
@@ -48,7 +48,7 @@ const getFolderWithFiles = async url => {
             if (stats.isFile()) {
                const fileData = await files.getFile(`${url}/${item}`)
                const filePath = url.replace(process.env.FS_PATH, '')
-               const id = await dailygit.database.getFileId({ path: filePath })
+               const id = await database.getFileId({ path: filePath })
                node.content = fileData.toString()
                node.id = id
                node.size = stats.size
