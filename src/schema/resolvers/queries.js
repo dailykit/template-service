@@ -88,8 +88,9 @@ const resolvers = {
          const stats = await fs.statSync(`${root}${args.path}`)
          try {
             const fs = await dailygit.files.getFile(`${root}${args.path}`)
-
+            const id = await dailygit.database.getFileId({ path: args.path })
             const file = {
+               id,
                name: path.basename(args.path),
                path: args.path,
                size: stats.size,

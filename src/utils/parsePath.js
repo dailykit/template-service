@@ -3,5 +3,5 @@ const getFilePath = path => path.split('/').slice(1).join('/')
 
 module.exports = {
    getRepoPath,
-   getFilePath,
+   getFilePath
 }
