@@ -56,6 +56,7 @@ const getFolderWithFiles = async url => {
             } else if (stats.isDirectory()) {
                let folders = await getFolderWithFiles(`${url}/${item}`)
                node.children = folders
+               node.id = null
                node.type = 'folder'
                const folderSize = await getFolderSize(`${url}/${item}`)
                   .filter(Boolean)
