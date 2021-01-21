@@ -60,7 +60,6 @@ const createFileRecord = async path => {
             lastSaved: new Date().toISOString()
          }
       }
-      console.log(variables)
 
       const data = await graphQLClient.request(createMutation, variables)
       return data.insert_editor_file_one.id
@@ -109,14 +108,12 @@ const deleteRecordedFile = async ({ path }) => {
    return console.log(JSON.stringify(data, undefined, 2))
 }
 
-const getFileId = async ({ path }) => {
+const getFileId = async path => {
    const variables = {
       path
    }
 
-   const data = await graphQLClient
-      .request(query, variables)
-      .catch(error => console.error(error))
+   const data = await graphQLClient.request(query, variables)
    if (
       // if fileId exist then return the file id
       Object.keys(data).length &&
@@ -126,12 +123,7 @@ const getFileId = async ({ path }) => {
       return data.editor_file[0].id
    } else {
       // if fileId not exist save the file in datahub and then return the fileId
-      const id = await createFileRecord({
-         fileType: nodePath.basename(path).split('.').pop(),
-         fileName: nodePath.basename(path),
-         path,
-         lastSaved: new Date().toISOString()
-      })
+      const id = await createFileRecord(path)
       return id
    }
 }

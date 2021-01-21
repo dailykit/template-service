@@ -47,8 +47,14 @@ const getFolderWithFiles = async url => {
             node.createdAt = stats.birthtime
             if (stats.isFile()) {
                const fileData = await files.getFile(`${url}/${item}`)
-               const filePath = url.replace(process.env.FS_PATH, '')
-               const id = await database.getFileId({ path: filePath })
+               const filePath = `${url}/${item}`.replace(
+                  process.env.FS_PATH,
+                  ''
+               )
+               const id = await database
+                  .getFileId(filePath)
+                  .catch(err => console.error(err))
+               console.log(filePath, id, url, item)
                node.content = fileData.toString()
                node.id = id
                node.size = stats.size
