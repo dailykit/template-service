@@ -1,17 +1,36 @@
 const fs = require('fs')
 const path = require('path')
 const git = require('isomorphic-git')
+const { createFolder } = require('./folder')
 git.plugins.set('fs', fs)
 
 const createFile = (filePath, content) => {
    return new Promise((resolve, reject) => {
-      if (fs.existsSync(filePath)) {
-         return reject(`File: ${path.basename(filePath)} already exists!`)
+      const parentDir = path.dirname(filePath)
+      if (fs.existsSync(parentDir)) {
+         if (fs.existsSync(filePath)) {
+            return reject(`File: ${path.basename(filePath)} already exists!`)
+         }
+         return fs.writeFile(
+            filePath,
+            JSON.stringify(content, null, 2),
+            error => {
+               if (error) return reject(new Error(error))
+               return resolve()
+            }
+         )
+      } else {
+         createFolder(parentDir).then(() => {
+            return fs.writeFile(
+               filePath,
+               JSON.stringify(content, null, 2),
+               error => {
+                  if (error) return reject(new Error(error))
+                  return resolve()
+               }
+            )
+         })
       }
-      return fs.writeFile(filePath, JSON.stringify(content, null, 2), error => {
-         if (error) return reject(new Error(error))
-         return resolve()
-      })
    })
 }
 
@@ -92,5 +111,5 @@ module.exports = {
    getFile,
    updateFile,
    renameFile,
-   upload,
+   upload
 }
