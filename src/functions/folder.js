@@ -121,10 +121,38 @@ const renameFolder = (oldPath, newPath) => {
    })
 }
 
+const downloadTemplate = async url => {
+   try {
+      const children = await database.getFolderWithFile(url)
+      const result = await Promise.all(
+         children.map(async child => {
+            let node = {}
+            node.path = child.path.replace(process.env.FS_PATH, '')
+            if (child.type === 'folder') {
+               const folder = await downloadTemplate(
+                  child.path.replace(process.env.FS_PATH, '')
+               )
+               node.children = folder
+               node.type = 'folder'
+            } else {
+               node.type = 'file'
+            }
+            return node
+         })
+      )
+
+      return result
+      // console.log(children)
+   } catch (error) {
+      return new Error(error)
+   }
+}
+
 module.exports = {
    createFolder,
    deleteFolder,
    renameFolder,
    getNestedFolders,
-   getFolderWithFiles
+   getFolderWithFiles,
+   downloadTemplate
 }

@@ -8,6 +8,7 @@
    },
    "dependencies": {
       "apollo-server-express": "^2.9.12",
+      "axios": "^0.21.1",
       "cors": "^2.8.5",
       "dotenv": "^8.2.0",
       "esm": "^3.2.25",
@@ -22,7 +23,10 @@
       "pug": "^3.0.0",
       "puppeteer": "^4.0.0",
       "qrcode": "^1.4.4",
-      "rimraf": "^3.0.0"
+      "rimraf": "^3.0.0",
+      "ssh2": "^0.8.9",
+      "tar-fs": "^2.1.1",
+      "zlib": "^1.0.5"
    },
    "devDependencies": {
       "nodemon": "^2.0.4"

@@ -172,13 +172,13 @@ const resolvers = {
             )
 
             // Database
-            const record = await dailygit.database.createFileRecord(args.path)
+            // const record = await dailygit.database.createFileRecord(args.path)
 
             return {
                success: true,
                message: `File ${path.basename(
                   args.path
-               )} has been created with fileId: ${record}`
+               )} has been created with fileId:`
             }
          } catch (error) {
             return {

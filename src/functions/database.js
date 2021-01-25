@@ -49,6 +49,24 @@ const query = gql`
       }
    }
 `
+const queryGetFolderWithFile = gql`
+   query getFolderWithFiles($path: String) {
+      getFolderWithFiles(path: $path) {
+         name
+         path
+         type
+         size
+         createdAt
+         children {
+            name
+            path
+            type
+            size
+            createdAt
+         }
+      }
+   }
+`
 
 const createFileRecord = async path => {
    try {
@@ -127,11 +145,30 @@ const getFileId = async path => {
       return id
    }
 }
+const getFolderWithFile = async path => {
+   const variables = {
+      path
+   }
+
+   const data = await graphQLClient.request(queryGetFolderWithFile, variables)
+   if (
+      // if children exist then return the children array
+      Object.keys(data).length &&
+      Object.keys(data.getFolderWithFiles).length &&
+      data.getFolderWithFiles.children.length
+   ) {
+      return data.getFolderWithFiles.children
+   } else {
+      // if children doesn't exist then return null
+      return []
+   }
+}
 
 module.exports = {
    createFileRecord,
    getFileId,
    updateRecordedFile,
    deleteRecordedFile,
-   renameRecordedFile
+   renameRecordedFile,
+   getFolderWithFile
 }

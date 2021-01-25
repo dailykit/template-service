@@ -2,16 +2,17 @@ require('dotenv').config()
 import fs from 'fs'
 import express from 'express'
 import puppeteer from 'puppeteer'
+import axios from 'axios'
 const app = express()
-
 const { ApolloServer } = require('apollo-server-express')
 const cors = require('cors')
 const depthLimit = require('graphql-depth-limit')
 // const http = require('http')
 
 // Import Schema
+const flatten = require('./src/utils/flatten')
 const schema = require('./src/schema/schema')
-
+const functions = require('./src/functions')
 const PORT = process.env.PORT || 4000
 const isProd = process.env.NODE_ENV === 'production' ? true : false
 
@@ -72,6 +73,34 @@ app.get('/', async (req, res) => {
       }
    } catch (error) {
       return res.status(400).json({ success: false, error: error.message })
+   }
+})
+
+app.get('/download/template/:path(*)', async (req, res) => {
+   try {
+      const result = await functions.folders.downloadTemplate(
+         `/${req.params.path}`
+      )
+      const filePaths = flatten(result)
+      await Promise.all(
+         filePaths.map(async path => {
+            try {
+               const { data } = await axios.get(
+                  `https://test.dailykit.org/template/files${path}`
+               )
+               await functions.files.createFile(
+                  `${process.env.FS_PATH}${path}`,
+                  data
+               )
+            } catch (error) {
+               console.log(error)
+            }
+         })
+      )
+      console.log('all files are created')
+      res.send(filePaths)
+   } catch (err) {
+      console.log(err)
    }
 })
 
