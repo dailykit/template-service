@@ -3,10 +3,9 @@ const path = require('path')
 const rimraf = require('rimraf')
 const database = require('./database')
 const git = require('isomorphic-git')
-git.plugins.set('fs', fs)
-
-const files = require('./file')
 const getFolderSize = require('../utils/getFolderSize')
+import * as files from './file'
+git.plugins.set('fs', fs)
 
 const getNestedFolders = async url => {
    try {
