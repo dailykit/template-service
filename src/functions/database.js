@@ -42,6 +42,36 @@ const renameMutation = gql`
       }
    }
 `
+const linkCssMutation = gql`
+   mutation linkCssMutation(
+      $cssFileId: Int!
+      $guiFileId: Int!
+      $position: bigint!
+   ) {
+      insert_editor_cssFileLinks_one(
+         object: {
+            cssFileId: $cssFileId
+            guiFileId: $guiFileId
+            position: $position
+         }
+      ) {
+         id
+      }
+   }
+`
+const linkJsMutation = gql`
+   mutation linkJsMutation($jsFileId: Int!, $guiFileId: Int!, $position: Int!) {
+      insert_editor_jsFileLinks_one(
+         object: {
+            jsFileId: $jsFileId
+            guiFileId: $guiFileId
+            position: $position
+         }
+      ) {
+         id
+      }
+   }
+`
 const query = gql`
    query getFileId($path: String!) {
       editor_file(where: { path: { _eq: $path } }) {
@@ -52,17 +82,39 @@ const query = gql`
 const queryGetFolderWithFile = gql`
    query getFolderWithFiles($path: String) {
       getFolderWithFiles(path: $path) {
+         id
          name
          path
          type
          size
          createdAt
          children {
+            id
             name
             path
             type
             size
             createdAt
+         }
+      }
+   }
+`
+const queryGetLinkedFiles = gql`
+   query getLinkedFiles($path: String!) {
+      editor_file(where: { path: { _eq: $path } }) {
+         linkedCssFiles(order_by: { position: desc_nulls_last }) {
+            cssFile {
+               path
+               id
+            }
+            position
+         }
+         linkedJsFiles(order_by: { position: desc_nulls_last }) {
+            jsFile {
+               path
+               id
+            }
+            position
          }
       }
    }
@@ -164,11 +216,67 @@ const getFolderWithFile = async path => {
    }
 }
 
+const getLinkedFiles = async path => {
+   const variables = {
+      path
+   }
+   const data = await graphQLClient.request(queryGetLinkedFiles, variables)
+   if (Object.keys(data).length && data.editor_file.length) {
+      const linkedCssFiles = data.editor_file[0].linkedCssFiles.map(file => {
+         return {
+            path: file.cssFile.path,
+            id: file.cssFile.id,
+            position: file.position
+         }
+      })
+      const linkedJsFiles = data.editor_file[0].linkedJsFiles.map(file => {
+         return {
+            path: file.jsFile.path,
+            id: file.jsFile.id,
+            position: file.position
+         }
+      })
+      return {
+         linkedCssFiles,
+         linkedJsFiles
+      }
+   } else {
+      return {
+         linkedCssFiles: [],
+         linkedJsFiles: []
+      }
+   }
+}
+
+const createCsslinkRecord = async ({ cssFileId, guiFileId, position }) => {
+   const variables = {
+      cssFileId,
+      guiFileId,
+      position
+   }
+
+   const data = await graphQLClient.request(linkCssMutation, variables)
+   return console.log(JSON.stringify(data, undefined, 2))
+}
+const createJslinkRecord = async ({ jsFileId, guiFileId, position }) => {
+   const variables = {
+      jsFileId,
+      guiFileId,
+      position
+   }
+
+   const data = await graphQLClient.request(linkJsMutation, variables)
+   return console.log(JSON.stringify(data, undefined, 2))
+}
+
 module.exports = {
    createFileRecord,
    getFileId,
    updateRecordedFile,
    deleteRecordedFile,
    renameRecordedFile,
-   getFolderWithFile
+   getFolderWithFile,
+   getLinkedFiles,
+   createCsslinkRecord,
+   createJslinkRecord
 }
