@@ -1,38 +1,48 @@
+const fs = require('fs')
+const path = require('path')
 const axios = require('axios')
 const functions = require('../functions')
+const resolvers = require('../schema/resolvers')
 const checkExist = require('./checkExist')
 
-const copyFile = async path => {
+const copyFile = async (filePath, dest) => {
+   console.log(filePath, dest)
    try {
       const { data } = await axios.get(
-         `https://test.dailykit.org/template/files${path}`
+         `${process.env.THEME_STORE_EXPRESS_URL}${filePath}`
       )
 
-      const url = await checkExist(path)
-      console.log(url)
-      await functions.files.createFile(
-         `${process.env.FS_PATH}${process.env.MARKET_PLACE_PATH}${url}`,
-         data
+      const { id } = await resolvers.mutations.Mutation.createFile(
+         '_',
+         (args = {
+            path: dest,
+            content: data
+         }),
+         { root: process.env.FS_PATH }
       )
-      const fileId = await functions.database.createFileRecord(
-         `${process.env.MARKET_PLACE_PATH}${path}`
-      )
+
       const {
          linkedCssFiles,
          linkedJsFiles
-      } = await functions.database.getLinkedFiles(path)
+      } = await functions.themeStoreDb.getLinkedFiles(filePath)
       console.log({
          linkedCssFiles,
          linkedJsFiles
       })
       if (linkedCssFiles.length) {
          linkedCssFiles.forEach(async cssPath => {
-            await copyFile(cssPath.path)
-            const cssId = await functions.database.getFileId(
-               `${process.env.MARKET_PLACE_PATH}${cssPath.path}`
+            const srcRootFolder = path.dirname(cssPath.path)
+            const dest = await checkExist(srcRootFolder)
+            await copyFile(
+               cssPath.path,
+               `${cssPath.path.replace(srcRootFolder, dest)}`
+            )
+
+            const cssId = await functions.themeStoreDb.getFileId(
+               `${cssPath.path.replace(srcRootFolder, dest)}`
             )
             await functions.database.createCsslinkRecord({
-               guiFileId: fileId,
+               guiFileId: id,
                cssFileId: cssId,
                position: cssPath.position
             })
@@ -40,12 +50,18 @@ const copyFile = async path => {
       }
       if (linkedJsFiles.length) {
          linkedJsFiles.forEach(async jsPath => {
-            await copyFile(jsPath.path)
-            const jsId = await functions.database.getFileId(
-               `${process.env.MARKET_PLACE_PATH}${jsPath.path}`
+            const srcRootFolder = path.dirname(jsPath.path)
+            const dest = checkExist(srcRootFolder)
+            await copyFile(
+               jsPath.path,
+               `${jsPath.path.replace(srcRootFolder, dest)}`
+            )
+
+            const jsId = await functions.themeStoreDb.getFileId(
+               `${jsPath.path.replace(srcRootFolder, dest)}`
             )
             await functions.database.createJslinkRecord({
-               guiFileId: fileId,
+               guiFileId: id,
                jsFileId: jsId,
                position: jsPath.position
             })

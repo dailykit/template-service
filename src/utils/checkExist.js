@@ -6,23 +6,20 @@ const copyName = async url => {
          `${process.env.FS_PATH}${process.env.MARKET_PLACE_PATH}${url}`
       )
       if (isExist) {
+         // let folderName = url.replace(/^\//g, '').split(/\//g)[0]
+         let newPath = url
          count += 1
-         let newPath = url.replace(/^\//g, '').split(/\//g)[0]
          if (count <= 1) {
-            newPath = newPath.concat(`_${count}`)
+            newPath = newPath.concat(`(${count})`)
          } else {
-            newPath = newPath.split('_')[0].concat(`_${count}`)
+            newPath = newPath.split('(')[0].concat(`(${count})`)
          }
-
-         console.log(`before if`, newPath, count)
-         const result = await copyName(`/${newPath}`)
-         console.log(`after if`, newPath, count)
+         const result = await copyName(newPath)
          return result
          //  const checkAgain = copyName()
       } else {
-         console.log(`else`, url)
          count = 0
-         return url
+         return `${process.env.MARKET_PLACE_PATH}${url}`
       }
    } catch (err) {
       return new Error(err)

@@ -11,7 +11,7 @@ const depthLimit = require('graphql-depth-limit')
 
 // Import Schema
 const flatten = require('./src/utils/flatten')
-const copyName = require('./src/utils/checkExist')
+const checkExist = require('./src/utils/checkExist')
 const copyFolder = require('./src/utils/copyFolder')
 const schema = require('./src/schema/schema')
 const functions = require('./src/functions')
@@ -80,30 +80,9 @@ app.get('/', async (req, res) => {
 
 app.get('/download/template/:path(*)', async (req, res) => {
    try {
-      const result = await copyFolder(`/${req.params.path}`)
-      // const result = await functions.folders.downloadTemplate(
-      //    `/${req.params.path}`
-      // )
-
-      // const filePaths = flatten(result)
-      // const allHtml = filePaths.filter(file => file.includes('html'))
-      // await Promise.all(
-      //    filePaths.map(async path => {
-      //       try {
-      //          const { data } = await axios.get(
-      //             `https://test.dailykit.org/template/files${path}`
-      //          )
-      //          const url = await copyName(path)
-      //          await functions.files.createFile(
-      //             `${process.env.FS_PATH}/${url}`,
-      //             data
-      //          )
-      //       } catch (error) {
-      //          console.log(error)
-      //       }
-      //    })
-      // )
-      // console.log('all files are created')
+      const src = `/${req.params.path}`
+      const dest = await checkExist(src)
+      const result = await copyFolder(src, dest)
       res.send(result)
    } catch (err) {
       console.log(err)
