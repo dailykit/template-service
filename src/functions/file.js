@@ -17,14 +17,10 @@ const createFile = (filePath, content) => {
          })
       } else {
          createFolder(parentDir).then(() => {
-            return fs.writeFile(
-               filePath,
-               JSON.stringify(content, null, 2),
-               error => {
-                  if (error) return reject(new Error(error))
-                  return resolve()
-               }
-            )
+            return fs.writeFile(filePath, content, error => {
+               if (error) return reject(new Error(error))
+               return resolve()
+            })
          })
       }
    })
