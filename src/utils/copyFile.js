@@ -38,7 +38,7 @@ const copyFile = async (filePath, dest) => {
                `${cssPath.path.replace(srcRootFolder, dest)}`
             )
 
-            const cssId = await functions.themeStoreDb.getFileId(
+            const cssId = await functions.database.getFileId(
                `${cssPath.path.replace(srcRootFolder, dest)}`
             )
             await functions.database.createCsslinkRecord({
@@ -57,7 +57,7 @@ const copyFile = async (filePath, dest) => {
                `${jsPath.path.replace(srcRootFolder, dest)}`
             )
 
-            const jsId = await functions.themeStoreDb.getFileId(
+            const jsId = await functions.database.getFileId(
                `${jsPath.path.replace(srcRootFolder, dest)}`
             )
             await functions.database.createJslinkRecord({
