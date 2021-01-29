@@ -78,7 +78,7 @@ app.get('/', async (req, res) => {
    }
 })
 
-app.get('/download/template/:path(*)', async (req, res) => {
+app.post('/download/:path(*)', async (req, res) => {
    try {
       const src = `/${req.params.path}`
       const dest = await checkExist(src)
