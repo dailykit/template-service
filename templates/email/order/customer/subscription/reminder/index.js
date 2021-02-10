@@ -1,3 +1,4 @@
+require('dotenv').config()
 import pug from 'pug'
 import moment from 'moment-timezone'
 import client from '../../../../../../lib/graphql'
@@ -44,7 +45,9 @@ const reminder_email = async data => {
          ),
          count,
          servingSize,
-         title
+         title,
+         siteUrl:
+            new URL(process.env.DATAHUB).origin + '/subscription/select-menu'
       }
 
       const {
