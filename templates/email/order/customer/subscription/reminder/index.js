@@ -49,6 +49,10 @@ const reminder_email = async data => {
 
       const {
          brandCustomer: {
+            brand: {
+               contact: [{ contactDetails }],
+               brand: [{ brandSiteDetails }]
+            },
             customer: {
                platform_customer: {
                   firstName,
@@ -66,11 +70,18 @@ const reminder_email = async data => {
          address: normalizeAddress(defaultCustomerAddress)
       }
 
+      const brandDetails = {
+         name: brandSiteDetails.name,
+         logo: brandSiteDetails.logo.url,
+         email: contactDetails.email,
+         phone: contactDetails.phoneNo
+      }
       const compiler = await pug.compileFile(__dirname + '/index.pug')
 
       const response = await compiler({
          subscriptionDetails,
-         customerDetails
+         customerDetails,
+         brandDetails
       })
       return response
    } catch (error) {
@@ -82,6 +93,14 @@ export default reminder_email
 
 const CUSTOMER_DETAILS = `query CustomerDetails($id: Int!) {
   brandCustomer(id: $id) {
+    brand {
+      contact: subscriptionStoreSettings(where: {subscriptionStoreSetting: {identifier: {_eq: "Contact"}, type: {_eq: "brand"}}}) {
+        contactDetails: value
+      }
+      brand: subscriptionStoreSettings(where: {subscriptionStoreSetting: {identifier: {_eq: "theme-brand"}, type: {_eq: "brand"}}}) {
+        brandSiteDetails: value
+      }
+    }
     customer {
       platform_customer {
         firstName
