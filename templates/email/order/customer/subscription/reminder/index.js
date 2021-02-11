@@ -35,7 +35,7 @@ const reminder_email = async data => {
             }
          ]
       } = await client.request(SUBSCRIPTION_DETAILS, {
-         id: parsed.subscriptionOccurenceId
+         id: parseInt(parsed.subscriptionOccurenceId)
       })
 
       const subscriptionDetails = {
@@ -65,7 +65,7 @@ const reminder_email = async data => {
             }
          }
       } = await client.request(CUSTOMER_DETAILS, {
-         id: parsed.brand_customerId
+         id: parseInt(parsed.brand_customerId)
       })
 
       const customerDetails = {
