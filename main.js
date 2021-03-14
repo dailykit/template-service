@@ -74,7 +74,7 @@ app.get('/', async (req, res) => {
             throw Error('Invalid Format')
       }
    } catch (error) {
-      return res.status(400).json({ success: false, error: error.message })
+      return res.status(400).json({ success: false, error })
    }
 })
 
