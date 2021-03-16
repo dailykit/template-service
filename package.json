@@ -7,15 +7,33 @@
       "dev": "nodemon -r esm index.js"
    },
    "dependencies": {
-      "dotenv": "8.2.0",
-      "esm": "3.2.25",
-      "express": "4.17.1",
-      "graphql-request": "2.1.0-next.1",
-      "pug": "3.0.0",
-      "puppeteer": "4.0.0",
-      "qrcode": "1.4.4"
+      "apollo-server-express": "^2.9.12",
+      "axios": "^0.21.1",
+      "cors": "^2.8.5",
+      "dotenv": "^8.2.0",
+      "esm": "^3.2.25",
+      "express": "^4.17.1",
+      "graphql": "^14.5.8",
+      "graphql-depth-limit": "^1.1.0",
+      "graphql-request": "^3.4.0",
+      "graphql-tools": "^4.0.6",
+      "isomorphic-git": "0.75.0",
+      "lodash": "^4.17.15",
+      "moment-timezone": "^0.5.32",
+      "pug": "^3.0.0",
+      "puppeteer": "^4.0.0",
+      "qrcode": "^1.4.4",
+      "rimraf": "^3.0.0",
+      "ssh2": "^0.8.9",
+      "tar-fs": "^2.1.1",
+      "zlib": "^1.0.5"
    },
    "devDependencies": {
       "nodemon": "^2.0.4"
+   },
+   "nodemonConfig": {
+      "ignore": [
+         "templates/*"
+      ]
    }
 }
