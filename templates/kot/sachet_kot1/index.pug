@@ -27,7 +27,7 @@ html
                ul.space-y-3.divide-y.divide-dashed.divide-gray-700
                   each node in item.sachets.list
                      li.py-1
-                        +product_header(`${node.displayName} - ${node.processingName}`, node.displayUnitQuantity)
+                        +product_header(`${node.name} - ${node.processing}`, node.unitQuantity)
                         if stationName === null
                            section.flex.flex-col
                               h3.font-bold Station: 

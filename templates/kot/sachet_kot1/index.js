@@ -25,7 +25,9 @@ const kot = async data => {
             count: node.childs_aggregate.aggregate.count,
             list: node.childs_aggregate.nodes.map(item => {
                const data = {
-                  ...item,
+                  name: item.displayName.split('->').pop().trim(),
+                  processing: item.processingName,
+                  unitQuantity: item.displayUnitQuantity,
                   supplier: {
                      name: 'N/A',
                      item: {
