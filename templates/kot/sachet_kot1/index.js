@@ -18,7 +18,7 @@ const kot = async data => {
 
       const items = order.cart.cartItemViews_aggregate.nodes.map(node => {
          const object = {
-            name: node.displayName,
+            name: node.displayName.split('->').pop().trim(),
             sachets: {}
          }
          object.sachets = {
