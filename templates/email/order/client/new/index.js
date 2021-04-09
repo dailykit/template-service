@@ -73,7 +73,7 @@ const order_new = async data => {
                settings.address.lng = brand.address[0].lng || ''
             }
          }
-      } else if (order.source === 'subscription') {
+      } else if (order.cart.source === 'subscription') {
          const { brand } = await client.request(BRAND_SUBSCRIPTION_SETTING, {
             id: order.cart.brandId
          })
@@ -206,6 +206,7 @@ const order_new = async data => {
       })
       return response
    } catch (error) {
+      console.log(error)
       throw Error(error.message)
    }
 }
