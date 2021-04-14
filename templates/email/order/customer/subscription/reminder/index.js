@@ -79,7 +79,9 @@ const reminder_email = async data => {
          email: contactDetails.email,
          phone: contactDetails.phoneNo
       }
-      const compiler = await pug.compileFile(__dirname + '/index.pug')
+      const compiler = await pug.compileFile(
+         __dirname + `/${data.fileName}.pug`
+      )
 
       const response = await compiler({
          subscriptionDetails,
