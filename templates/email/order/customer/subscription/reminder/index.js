@@ -80,7 +80,7 @@ const reminder_email = async data => {
          phone: contactDetails.phoneNo
       }
       const compiler = await pug.compileFile(
-         __dirname + `/${data.fileName}.pug`
+         __dirname + `/${parsed.fileName}.pug`
       )
 
       const response = await compiler({
