@@ -17,26 +17,34 @@ const normalizeAddress = address => {
 
 const reminder_email = async data => {
    try {
-      const parsed = await JSON.parse(data)
+      console.log(data, typeof data.subscriptionOccurenceId)
+      const { subscriptionOccurences } = await client.request(
+         SUBSCRIPTION_DETAILS,
+         {
+            id: data.subscriptionOccurenceId
+         }
+      )
+
+      if (subscriptionOccurences.length === 0)
+         return res.status(200).json({
+            success: false,
+            message: `No subscription occurence linked to id ${subscriptionOccurenceId}`
+         })
+
+      const [occurence] = subscriptionOccurences
       const {
-         subscriptionOccurences: [
-            {
-               fulfillmentDate,
-               cutoffTimeStamp,
-               subscription: {
-                  subscriptionItemCount: {
-                     count,
-                     subscriptionServing: {
-                        servingSize,
-                        subscriptionTitle: { title }
-                     }
-                  }
-               }
-            }
-         ]
-      } = await client.request(SUBSCRIPTION_DETAILS, {
-         id: parseInt(parsed.subscriptionOccurenceId)
-      })
+         fulfillmentDate,
+         cutoffTimeStamp,
+         subscription: {
+            subscriptionItemCount: {
+               count,
+               subscriptionServing: {
+                  servingSize,
+                  subscriptionTitle: { title } = {}
+               } = {}
+            } = {}
+         } = {}
+      } = occurence
 
       const subscriptionDetails = {
          deliveryDate: moment(fulfillmentDate).format('ddd, DD MMM, YYYY'),
@@ -52,10 +60,7 @@ const reminder_email = async data => {
 
       const {
          brandCustomer: {
-            brand: {
-               contact: [{ contactDetails }],
-               brand: [{ brandSiteDetails }]
-            },
+            brand: { contact, brand },
             customer: {
                platform_customer: {
                   firstName,
@@ -65,11 +70,27 @@ const reminder_email = async data => {
             }
          }
       } = await client.request(CUSTOMER_DETAILS, {
-         id: parseInt(parsed.brand_customerId)
+         id: parseInt(data.brand_customerId)
       })
 
+      if (contact.length === 0)
+         return res.status(200).json({
+            success: false,
+            message: `No contact details linked to brand customer id ${data.brand_customerId}`
+         })
+
+      const [{ contactDetails }] = contact
+
+      if (brand.length === 0)
+         return res.status(200).json({
+            success: false,
+            message: `No brand details linked to brand customer id ${data.brand_customerId}`
+         })
+
+      const [{ brandSiteDetails }] = brand
+
       const customerDetails = {
-         name: firstName + lastName,
+         name: firstName + ' ' + lastName,
          address: normalizeAddress(defaultCustomerAddress)
       }
 
@@ -79,8 +100,40 @@ const reminder_email = async data => {
          email: contactDetails.email,
          phone: contactDetails.phoneNo
       }
+
+      if (readVar === true) {
+         return JSON.stringify({
+            subscriptionDetails,
+            customerDetails,
+            brandDetails
+         })
+      }
+
+      if (readAlias === true) {
+         return `{
+            subscriptionDetails {
+               deliveryDate,
+               cutOffTimeStamp,
+               count,
+               servingSize,
+               title,
+               siteUrl
+            }
+            customerDetails{
+               name,
+               address
+            }
+            brandDetails {
+               name,
+               logo,
+               email,
+               phone
+            }
+         }`
+      }
+
       const compiler = await pug.compileFile(
-         __dirname + `/${parsed.fileName}.pug`
+         __dirname + `/${data.emailTemplateFileName}.pug`
       )
 
       const response = await compiler({

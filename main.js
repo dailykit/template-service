@@ -5,10 +5,21 @@ const app = express()
 
 app.get('/', async (req, res) => {
    try {
-      const { template, data } = req.query
+      const { template, data, readVar = false, readAlias = false } = req.query
       const parsed = await JSON.parse(template)
-      const method = require(`./templates/${parsed.type}/${parsed.name}/index`)
-      const result = await method.default(data, template)
+
+      let method, result
+      if (parsed.hasOwnProperty('path')) {
+         method = require(`./${parsed.path}`)
+         const parseData = await JSON.parse(data)
+         result = await method.default(
+            { ...parseData, readVar, readAlias },
+            template
+         )
+      } else {
+         method = require(`./templates/${parsed.type}/${parsed.name}/index`)
+         result = await method.default(data, template)
+      }
 
       switch (parsed.format) {
          case 'html':
