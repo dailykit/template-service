@@ -158,15 +158,15 @@ const order_new = async data => {
                   order.orderCart.occurence.subscription.itemCount.count
                if (
                   'servingId' in
-                     order.orderCart.occurence.subscription.itemCount &&
+                  order.orderCart.occurence.subscription.itemCount &&
                   order.orderCart.occurence.subscription.itemCount.servingId
                ) {
                   plan.serving =
                      order.orderCart.occurence.subscription.itemCount.serving.size
                   if (
                      'titleId' in
-                        order.orderCart.occurence.subscription.itemCount
-                           .serving &&
+                     order.orderCart.occurence.subscription.itemCount
+                        .serving &&
                      order.orderCart.occurence.subscription.itemCount.serving
                         .titleId
                   ) {

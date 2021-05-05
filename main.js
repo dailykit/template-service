@@ -5,17 +5,20 @@ const app = express()
 
 app.get('/', async (req, res) => {
    try {
-      const { template, data, readVar = false, readAlias = false } = req.query
+      const { template, data, readVar, readAlias } = req.query
       const parsed = await JSON.parse(template)
 
       let method, result
-      if (parsed.hasOwnProperty('path')) {
+      if (parsed.path) {
          method = require(`./${parsed.path}`)
          const parseData = await JSON.parse(data)
+
          result = await method.default(
             { ...parseData, readVar, readAlias },
             template
          )
+         console.log(result)
+
       } else {
          method = require(`./templates/${parsed.type}/${parsed.name}/index`)
          result = await method.default(data, template)
@@ -46,6 +49,6 @@ app.get('/', async (req, res) => {
    }
 })
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 4001
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))
