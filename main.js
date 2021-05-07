@@ -7,7 +7,6 @@ app.get('/', async (req, res) => {
    try {
       const { template, data, readVar, readAlias } = req.query
       const parsed = await JSON.parse(template)
-
       let method, result
       if (parsed.path) {
          method = require(`./${parsed.path}`)

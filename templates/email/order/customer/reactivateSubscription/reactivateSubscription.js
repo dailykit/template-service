@@ -2,7 +2,7 @@ require('dotenv').config()
 import pug from 'pug'
 import client from '../../../../../lib/graphql'
 
-const signup_email = async data => {
+const reactivateSubscription = async data => {
     try {
         const {
             brandCustomer: {
@@ -17,6 +17,7 @@ const signup_email = async data => {
         } = await client.request(CUSTOMER_DETAILS, {
             id: data.brandCustomerId
         })
+        console.log("👉", data)
         if (contact.length === 0)
             return res.status(200).json({
                 success: false,
@@ -82,7 +83,7 @@ const signup_email = async data => {
     }
 }
 
-export default signup_email
+export default reactivateSubscription
 
 const CUSTOMER_DETAILS = `query CustomerDetails($id: Int!) {
   brandCustomer(id: $id) {
