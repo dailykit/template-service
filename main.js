@@ -14,10 +14,8 @@ app.get('/', async (req, res) => {
 
          result = await method.default(
             { ...parseData, readVar, readAlias },
-            template
+            parsed
          )
-         console.log(result)
-
       } else {
          method = require(`./templates/${parsed.type}/${parsed.name}/index`)
          result = await method.default(data, template)
@@ -44,7 +42,7 @@ app.get('/', async (req, res) => {
             throw Error('Invalid Format')
       }
    } catch (error) {
-      return res.status(400).json({ success: false, error })
+      return res.status(400).json({ success: false, error: error.message })
    }
 })
 
