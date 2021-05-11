@@ -18,7 +18,7 @@
       "graphql-request": "^3.4.0",
       "graphql-tools": "^4.0.6",
       "isomorphic-git": "0.75.0",
-      "lodash": "^4.17.15",
+      "lodash": "^4.17.21",
       "moment-timezone": "^0.5.32",
       "pug": "^3.0.0",
       "puppeteer": "^4.0.0",
