@@ -89,7 +89,6 @@ app.get('/', async (req, res) => {
    }
 })
 
-const PORT = process.env.PORT || 4000
 app.post('/download/:path(*)', async (req, res) => {
    try {
       const src = `/${req.params.path}`
