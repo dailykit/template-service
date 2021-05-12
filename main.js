@@ -48,10 +48,21 @@ app.use('/files', express.static('templates'))
 
 app.get('/', async (req, res) => {
    try {
-      const { template, data } = req.query
+      const { template, data, readVar, readAlias } = req.query
       const parsed = await JSON.parse(template)
-      const method = require(`./templates/${parsed.type}/${parsed.name}/index`)
-      const result = await method.default(data, template)
+      let method, result
+      if (parsed.path) {
+         method = require(`./${parsed.path}`)
+         const parseData = await JSON.parse(data)
+
+         result = await method.default(
+            { ...parseData, readVar, readAlias },
+            parsed
+         )
+      } else {
+         method = require(`./templates/${parsed.type}/${parsed.name}/index`)
+         result = await method.default(data, template)
+      }
 
       switch (parsed.format) {
          case 'html':
@@ -74,10 +85,11 @@ app.get('/', async (req, res) => {
             throw Error('Invalid Format')
       }
    } catch (error) {
-      return res.status(400).json({ success: false, error })
+      return res.status(400).json({ success: false, error: error.message })
    }
 })
 
+const PORT = process.env.PORT || 4000
 app.post('/download/:path(*)', async (req, res) => {
    try {
       const src = `/${req.params.path}`
