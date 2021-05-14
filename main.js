@@ -48,23 +48,31 @@ app.use('/files', express.static('templates'))
 
 app.get('/', async (req, res) => {
    try {
-      const { template, data, readVar, readAlias } = req.query
-      const parsed = await JSON.parse(template)
-      let method, result
-      if (parsed.path) {
-         method = require(`./templates/${parsed.path}`)
-         const parseData = await JSON.parse(data)
+      if (!('template' in req.query)) {
+         return res.status(400).json({
+            success: false,
+            error: 'template query param is required!'
+         })
+      }
+      if (!('data' in req.query)) {
+         return res
+            .status(400)
+            .json({ success: false, error: 'data query param is required!' })
+      }
 
-         result = await method.default(
-            { ...parseData, readVar, readAlias },
-            parsed
-         )
+      const template = await JSON.parse(req.query.template)
+      let method, result
+      if (template.path) {
+         method = require(`./templates/${template.path}`)
+         const data = await JSON.parse(req.query.data)
+
+         result = await method.default(data, template)
       } else {
-         method = require(`./templates/${parsed.type}/${parsed.name}/index`)
+         method = require(`./templates/${template.type}/${template.name}/index`)
          result = await method.default(data, template)
       }
 
-      switch (parsed.format) {
+      switch (template.format) {
          case 'html':
             return res.send(result)
          case 'pdf': {
@@ -74,10 +82,10 @@ app.get('/', async (req, res) => {
             const page = await browser.newPage()
             await page.setContent(result)
             const buffer = await page.pdf({
-               path: `${parsed.type}.pdf`
+               path: `${template.type}.pdf`
             })
             await browser.close()
-            fs.unlinkSync(`${parsed.type}.pdf`)
+            fs.unlinkSync(`${template.type}.pdf`)
             res.type('application/pdf')
             return res.send(buffer)
          }
