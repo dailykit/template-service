@@ -52,7 +52,7 @@ app.get('/', async (req, res) => {
       const parsed = await JSON.parse(template)
       let method, result
       if (parsed.path) {
-         method = require(`./${parsed.path}`)
+         method = require(`./templates/${parsed.path}`)
          const parseData = await JSON.parse(data)
 
          result = await method.default(
