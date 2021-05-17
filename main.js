@@ -61,16 +61,14 @@ app.get('/', async (req, res) => {
       }
 
       const template = await JSON.parse(req.query.template)
-      let method, result
+      const data = await JSON.parse(req.query.data)
+      let method
       if (template.path) {
          method = require(`./templates/${template.path}`)
-         const data = await JSON.parse(req.query.data)
-
-         result = await method.default(data, template)
       } else {
          method = require(`./templates/${template.type}/${template.name}/index`)
-         result = await method.default(data, template)
       }
+      let result = await method.default(data, template)
 
       switch (template.format) {
          case 'html':
