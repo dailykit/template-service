@@ -37,13 +37,11 @@ html
                            th(style="--tw-text-opacity: 1;color: rgba(107, 114, 128, var(--tw-text-opacity));text-align: right;") Price
                      tbody
                         each product in cart.products
-                           tr(style="font-size: 16px;height: 1.75rem;border-bottom: 1px solid #e5e7eb;")
+                           tr(style="font-size: 16px;border-bottom: 1px solid #e5e7eb;")
                               td(style="display:flex;align-items:center;")
                                  if product.image
                                     img(src=product.image, alt=product.name width="48px" style="border-radius: 2px;margin-right:14px")
                                  p #{product.name}
-                              td(style="text-align: right;") 
-                                 p #{product.price}
                   section(style="width: 100%;")
                      +billing("Item Total:", cart.itemTotal)
                      +billing("Delivery Price:", cart.deliveryPrice)

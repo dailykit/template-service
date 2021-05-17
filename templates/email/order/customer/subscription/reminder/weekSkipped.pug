@@ -43,8 +43,6 @@ html
                                  if product.image
                                     img(src=product.image, alt=product.name width="48px" style="border-radius: 2px;margin-right:14px")
                                  p #{product.name}
-                              td(style="text-align: right;") 
-                                 p #{product.price}
                   section(style="width: 100%;")
                      +billing("Item Total:", cart.itemTotal)
                      +billing("Delivery Price:", cart.deliveryPrice)

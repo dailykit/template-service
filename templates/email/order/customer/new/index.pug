@@ -54,7 +54,8 @@ html
                   each item in items
                      tr(style="height: 1.75rem;border-bottom: 1px solid #e5e7eb;")
                         td #{item.title}
-                        td(style="text-align: right;") #{item.price}
+                        if source != 'subscription'
+                           td(style="text-align: right;") #{item.price}
             section(style="width: 100%;")
                +billing("Item Total:", itemTotal)
                +billing("Delivery Price:", deliveryPrice)
