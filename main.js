@@ -48,12 +48,29 @@ app.use('/files', express.static('templates'))
 
 app.get('/', async (req, res) => {
    try {
-      const { template, data } = req.query
-      const parsed = await JSON.parse(template)
-      const method = require(`./templates/${parsed.type}/${parsed.name}/index`)
-      const result = await method.default(data, template)
+      if (!('template' in req.query)) {
+         return res.status(400).json({
+            success: false,
+            error: 'template query param is required!'
+         })
+      }
+      if (!('data' in req.query)) {
+         return res
+            .status(400)
+            .json({ success: false, error: 'data query param is required!' })
+      }
 
-      switch (parsed.format) {
+      const template = await JSON.parse(req.query.template)
+      const data = await JSON.parse(req.query.data)
+      let method
+      if (template.path) {
+         method = require(`./templates/${template.path}`)
+      } else {
+         method = require(`./templates/${template.type}/${template.name}/index`)
+      }
+      let result = await method.default(data, template)
+
+      switch (template.format) {
          case 'html':
             return res.send(result)
          case 'pdf': {
@@ -63,10 +80,10 @@ app.get('/', async (req, res) => {
             const page = await browser.newPage()
             await page.setContent(result)
             const buffer = await page.pdf({
-               path: `${parsed.type}.pdf`
+               path: `${template.type}.pdf`
             })
             await browser.close()
-            fs.unlinkSync(`${parsed.type}.pdf`)
+            fs.unlinkSync(`${template.type}.pdf`)
             res.type('application/pdf')
             return res.send(buffer)
          }
@@ -74,7 +91,7 @@ app.get('/', async (req, res) => {
             throw Error('Invalid Format')
       }
    } catch (error) {
-      return res.status(400).json({ success: false, error })
+      return res.status(400).json({ success: false, error: error.message })
    }
 })
 
