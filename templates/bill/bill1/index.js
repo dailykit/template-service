@@ -22,10 +22,8 @@ const normalizeAddress = address => {
 
 const bill1 = async data => {
    try {
-      const parsed = await JSON.parse(data)
-
       const { order } = await client.request(ORDER, {
-         id: parsed.id.toString()
+         id: data.id.toString()
       })
 
       const settings = {
@@ -99,11 +97,8 @@ const bill1 = async data => {
          }
       }
 
-      const {
-         customerPhone,
-         customerFirstName,
-         customerLastName
-      } = order.cart.customerInfo
+      const { customerPhone, customerFirstName, customerLastName } =
+         order.cart.customerInfo
 
       const compiler = await pug.compileFile(__dirname + '/index.pug')
 
@@ -178,7 +173,7 @@ const bill1 = async data => {
          plan,
          items,
          dropoff,
-         id: parsed.id,
+         id: data.id,
          source: order.cart.source,
          status: order.cart.orderStatus.title,
          isTest: order.cart.isTest,
@@ -260,7 +255,7 @@ const ORDER = `
                   }
                }
             }
-            products: cartItemViews_aggregate(
+            products: cartItems_aggregate(
                where: { levelType: { _eq: "orderItem" } }
             ) {
                aggregate {

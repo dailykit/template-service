@@ -186,8 +186,8 @@ const reminder_email = async (data, template) => {
          cart.totalPrice = format_currency(Number(one.totalPrice) || 0)
          cart.deliveryPrice = format_currency(Number(one.deliveryPrice) || 0)
 
-         if (one.cartItemViews_aggregate.aggregate.count > 0) {
-            const { nodes = [] } = one.cartItemViews_aggregate
+         if (one.cartItems_aggregate.aggregate.count > 0) {
+            const { nodes = [] } = one.cartItems_aggregate
             cart.products = nodes.map(node => ({
                id: node.id,
                image: node.image,
@@ -200,7 +200,7 @@ const reminder_email = async (data, template) => {
       }
 
       const compiler = await pug.compileFile(
-         __dirname + `/${emailTemplateFileName}.pug`
+         __dirname + '/' + emailTemplateFileName
       )
 
       const response = await compiler({
@@ -291,7 +291,7 @@ const SUBSCRIPTION_DETAILS = `
 const CART_PRODUCTS = `
    query carts(
       $where_cart: order_cart_bool_exp = {}
-      $where_cartItem: order_cartItemView_bool_exp = {}
+      $where_cartItem: order_cartItem_bool_exp = {}
    ) {
       carts(where: $where_cart) {
          id
@@ -301,7 +301,7 @@ const CART_PRODUCTS = `
          itemTotal
          totalPrice
          deliveryPrice
-         cartItemViews_aggregate(where: $where_cartItem) {
+         cartItems_aggregate(where: $where_cartItem) {
             aggregate {
                count
             }

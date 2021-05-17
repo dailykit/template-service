@@ -4,7 +4,7 @@ import client from '../../../lib/graphql'
 
 const PRODUCT = `
    query cartItems($id: Int_comparison_exp!) {
-      cartItems: order_cartItemView(where: { id: $id }) {
+      cartItems(where: { id: $id }) {
          id
          displayName
          levelType
@@ -24,17 +24,15 @@ const PRODUCT = `
 
 const label = async data => {
    try {
-      const parsed = await JSON.parse(data)
-
       const { cartItems = [] } = await client.request(PRODUCT, {
-         id: { _eq: parsed.id }
+         id: { _eq: data.id }
       })
       if (cartItems.length === 0) return
       const [cartItem] = cartItems
 
       const qrCode = await QR.toDataURL(
          JSON.stringify({
-            product_id: parsed.id,
+            product_id: data.id,
             order_id: cartItem.cart.orderId,
             type: cartItem.productOptionType
          })

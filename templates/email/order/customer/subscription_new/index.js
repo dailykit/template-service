@@ -21,10 +21,8 @@ const normalizeAddress = address => {
 
 const email = async data => {
    try {
-      const parsed = await JSON.parse(data)
-
       const { order } = await client.request(ORDER, {
-         id: parsed.id
+         id: data.id.toString()
       })
 
       if (!order) throw 'No such order exists'
@@ -218,7 +216,7 @@ const ORDER = `
                   }
                }
             }
-            products: cartItemViews_aggregate(
+            products: cartItems_aggregate(
                where: { levelType: { _eq: "orderItem" } }
             ) {
                aggregate {

@@ -4,11 +4,7 @@ import client from '../../../lib/graphql'
 
 const kot = async data => {
    try {
-      const {
-         order: { id } = {},
-         station = {},
-         product = {}
-      } = await JSON.parse(data)
+      const { order: { id } = {}, station = {}, product = {} } = data
 
       const { order = {} } = await client.request(ORDER, {
          id: id
@@ -29,7 +25,7 @@ const kot = async data => {
             name: type.title,
             products: []
          }
-         object.products = type.cartItemViews_aggregate.nodes.map(item => {
+         object.products = type.cartItems_aggregate.nodes.map(item => {
             const result = {
                name: item.displayName.split('->').pop().trim() || '',
                quantity: item.displayUnitQuantity || 1,
@@ -127,10 +123,10 @@ const capitalize = (str, lower = false) =>
 const TYPES = `
    query types($id: Int!, $stationId: Int_comparison_exp) {
       types: productOptionTypes(
-         where: { cartItemViews: { cart: { orderId: { _eq: $id } } } }
+         where: { cartItems: { cart: { orderId: { _eq: $id } } } }
       ) {
          title
-         cartItemViews_aggregate(
+         cartItems_aggregate(
             where: {
                operationConfig: { stationId: $stationId }
                levelType: { _eq: "orderItem" }
@@ -183,135 +179,6 @@ const ORDER = `
          readyByTimestamp
          cart {
             customer: customerInfo
-         }
-      }
-   }
-`
-
-const ORDER1 = `
-   query order($id: oid!, $assemblyStationId: Int_comparison_exp) {
-      order(id: $id) {
-         fulfillmentType
-         readyByTimestamp
-         customer: deliveryInfo(path: "dropoff.dropoffInfo")
-         orderInventory: orderInventoryProducts_aggregate(
-            where: { assemblyStationId: $assemblyStationId }
-         ) {
-            aggregate {
-               count(columns: id)
-            }
-            nodes {
-               id
-               quantity
-               comboProductId
-               assemblyStationId
-               comboProductComponentId
-               assemblyStation {
-                 name
-               }
-               inventoryProduct {
-                  id
-                  name
-                  sachetItemId
-                  sachetItem {
-                     unit
-                     unitSize
-                  }
-                  supplierItemId
-                  supplierItem {
-                     id
-                     name
-                     supplierId
-                     supplier {
-                        id
-                        name
-                     }
-                  }
-               }
-               comboProduct {
-                  id
-                  name
-               }
-               comboProductComponent {
-                  id
-                  label
-               }
-               inventoryProductOption {
-                  id
-                  label
-                  quantity
-               }
-            }
-         }
-         orderMealKit: orderMealKitProducts_aggregate(
-            where: { assemblyStationId: $assemblyStationId }
-         ) {
-            aggregate {
-               count(columns: id)
-            }
-            nodes {
-               id
-               quantity
-               comboProductId
-               assemblyStationId
-               comboProductComponentId
-               assemblyStation {
-                 name
-               }
-               simpleRecipeProduct {
-                  id
-                  name
-               }
-               comboProduct {
-                  id
-                  name
-               }
-               comboProductComponent {
-                  id
-                  label
-               }
-               simpleRecipeProductOption {
-                  id
-                  yield: simpleRecipeYield {
-                     serving: yield(path: "serving")
-                  }
-               }
-            }
-         }
-         orderReadyToEat: orderReadyToEatProducts_aggregate(
-            where: { assemblyStationId: $assemblyStationId }
-         ) {
-            aggregate {
-               count(columns: id)
-            }
-            nodes {
-               id
-               quantity
-               comboProductId
-               assemblyStationId
-               comboProductComponentId
-               assemblyStation {
-                 name
-               }
-               simpleRecipeProduct {
-                  id
-                  name
-               }
-               comboProduct {
-                  id
-                  name
-               }
-               comboProductComponent {
-                  id
-                  label
-               }
-               simpleRecipeProductOption {
-                  id
-                  yield: simpleRecipeYield {
-                     serving: yield(path: "serving")
-                  }
-               }
-            }
          }
       }
    }

@@ -4,10 +4,7 @@ import client from '../../../lib/graphql'
 
 const kot = async data => {
    try {
-      const {
-         order: { id = '' } = {},
-         station = { ids: [] }
-      } = await JSON.parse(data)
+      const { order: { id = '' } = {}, station = { ids: [] } } = data
 
       const { order = {} } = await client.request(ORDER, {
          id,
@@ -16,7 +13,7 @@ const kot = async data => {
 
       let stationName = null
 
-      const items = order.cart.cartItemViews_aggregate.nodes.map(node => {
+      const items = order.cart.cartItems_aggregate.nodes.map(node => {
          const object = {
             name: node.displayName.split('->').pop().trim(),
             sachets: {}
@@ -108,7 +105,7 @@ const ORDER = `
          fulfillmentType
          cart {
             customerInfo
-            cartItemViews_aggregate(
+            cartItems_aggregate(
                where: {
                   levelType: { _eq: "orderItem" }
                   operationConfig: { stationId: $stationId }

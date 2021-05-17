@@ -5,10 +5,8 @@ import client from '../../../lib/graphql'
 
 const label = async data => {
    try {
-      const parsed = await JSON.parse(data)
-
       const { cartItems = [] } = await client.request(SACHET, {
-         id: { _eq: parsed.id }
+         id: { _eq: data.id }
       })
 
       if (cartItems.length === 0) return
@@ -17,7 +15,7 @@ const label = async data => {
       const qrCode = await QR.toDataURL(
          JSON.stringify({
             type: cartItem.productOptionType,
-            sachet_id: parsed.id,
+            sachet_id: data.id,
             product_id: cartItem.parentCartItemId,
             order_id: cartItem.cart.orderId
          })
@@ -40,7 +38,7 @@ export default label
 
 const SACHET = `
    query cartItems($id: Int_comparison_exp!) {
-      cartItems: order_cartItemView(where: { id: $id }) {
+      cartItems(where: { id: $id }) {
          id
          levelType
          displayName
